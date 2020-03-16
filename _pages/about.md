@@ -12,7 +12,7 @@ Senior Software Engineer currently @ Microsoft
 
 _Mostly work on Data and Machine Learning engineering. Interested in things behind the number._
 
-_Love funny projects, music, travel, hiking, ancient things, building, drone._  
+_Love funny projects, music, travel, hiking, ancient things, building, photograph, drone._  
 
 <br>
 <br>
