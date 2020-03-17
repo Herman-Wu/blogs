@@ -19,7 +19,7 @@ services:
 
   converter:
     <<: *fastpages
-    command: /fastpages/action_entrypoint.sh
+    command: _action_files/action_entrypoint.sh
 
   watcher:
     <<: *fastpages
