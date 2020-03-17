@@ -10,33 +10,33 @@
 
 <p>微軟的AutoML 屬於 Azure Machine Learning Services 的其中一個服務, 這個服務在去年九月底Ingite 大會中正式Preview. 這個服務的原型架構是基於2017微軟研究院發表的<a href="https://www.microsoft.com/en-us/research/publication/probabilistic-matrix-factorization-for-automated-machine-learning/">Paper</a>, 透過collaborative filtering, Bayesian optimization,  probabilistic matrix factorization 等的一些技術從大量的機器學習訓練中學習如何挑選適合的Feature Enginee跟機器學習演算法。</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_flow.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_flow.jpg" alt="img" /></p>
 
 <p>Azure AutoML 在運作時需要透過雲端ML資料庫去分析目前模型訓練的結果, 並決定下一步要做那些調整不過這中間過程中並不需要將使用者原始資料送到雲端, 而是把每個階段模型訓練的結果配合資料的特性資訊選擇下一階段(Interation)要使用的Feaure Engineering方式及演算法架構. 繞舌的說就是透過微軟的大量機訓練歷史資料庫,藉由機器學習來協助開發者進行機器學習.</p>
 
 <p>由於Azure AutoML 可以透過Python SDK 來呼叫與操作, 因此可以很方便的在筆者平常使用編輯器VSCode 上直接呼叫使用.</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_vscode.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_vscode.jpg" alt="img" /></p>
 
 <p>或者也可以在JupyterNotebook 上使用</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/jupyter_automl.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/jupyter_automl.jpg" alt="img" /></p>
 
 <p>由於Azure AutoML 是Azure Machine Learning Services 的一環, 因此所有的訓練資料與結果都直接在Azure Machine Learning Service結合,統一的管理與顯示。</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_training.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_training.jpg" alt="img" /></p>
 
 <p>同時也可以針對個別階段的訓練去了解模型的各項參數設定與模型預測績效。</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_training2.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_training2.jpg" alt="img" /></p>
 
 <p>Azure AutoML 主要目的減少開發機器學習所需的時間與門檻, 在這次//Build 大會上更近一步的簡化建立機器學習所需要撰寫的程式碼, 推出 “無程式碼(zero-code)”的 AutoML 操作介面。使用者可以直接Azure Machine Learning Service 的介面上, 直接上傳資料。</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_codeless1.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_codeless1.jpg" alt="img" /></p>
 
 <p>然後透過Web介面設定所有的AutoML 參數, 就可以透過微軟AutoML服務來訓練模型, 訓練與測試各式模型, 找出適合的演算法與效果較好的Feature Engineering方式, 在毋需大量人力調教的狀況下, 得到一個優化過的預測模型。</p>
 
-<p><img src="/blogs/_posts/cht/2019-05-06-Build2019_AI_news/automl_codeless2.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2019-05-06-Build2019_AI_news/automl_codeless2.jpg" alt="img" /></p>
 
 <p>除了公布  “無程式碼(zero-code)”的 AutoML 新功能外, 微軟在上個月份(April)
 其實已經陸陸續續宣布把AutoML這個技術延伸到下面產品中:</p>
