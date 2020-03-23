@@ -1,8 +1,8 @@
 ---
-title: "Troubleshooting  Azure Data Explorer (Kusto) login issues"
+title: "Troubleshooting  Azure Data Explorer (Kusto) cross tenant access issues"
 layout: post
-summary: "notes about some learning from fixing Azure Data Explorer (Kusto) account login issues  "
-description: notes about some learning from fixing Azure Data Explorer (Kusto) account login issues 
+summary: "notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues  "
+description: notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues 
 toc: false
 comments: true
 image: https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg
