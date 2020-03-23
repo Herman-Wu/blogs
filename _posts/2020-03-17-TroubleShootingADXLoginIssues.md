@@ -1,8 +1,8 @@
 ---
-title: "Troubleshooting  Azure Data Explorer (Kusto) cross tenant access issues"
+title: "Troubleshooting  Azure Data Explorer (Kusto) cross-tenant access issues"
 layout: post
-summary: "notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues  "
-description: notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues 
+summary: "notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues  "
+description: notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues 
 toc: false
 comments: true
 image: https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg
@@ -70,7 +70,7 @@ You can read ADX [Security roles management](https://docs.microsoft.com/en-us/az
 ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects. 
 
 
-##### Trouble Shooting Azuer Data Explorer user authentication issue
+##### Azuer Data Explorer cross-tenant access issue
 
 Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. However it's not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues. 
 
@@ -87,11 +87,11 @@ _**Solution A**: Force ADX WebUI and Kusto Explorer to use not ADX's tenant_
 
   Default ADX WebUI has URL like 
 
-  https://dataexplorer.azure.com/clusters/[cluster name].[data center]
+  _https://dataexplorer.azure.com/clusters/[cluster name].[data center]_
 
   You can force it to recognize a user's login tenant by add &tenant=[tenant id] to the URL. So it will look like
 
-  https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]
+  _https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]_
 
 * Kusto Explorer Client
 
