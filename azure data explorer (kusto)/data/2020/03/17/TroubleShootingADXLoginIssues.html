@@ -3,9 +3,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Trouble Shooting ADX (Kusto) login issues | Herman’s Notebook</title>
+<title>Troubleshooting ADX (Kusto) login issues | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Trouble Shooting ADX (Kusto) login issues" />
+<meta property="og:title" content="Troubleshooting ADX (Kusto) login issues" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="notes about some learning from fixing ADX (Kusto) account login issues" />
 <meta property="og:description" content="notes about some learning from fixing ADX (Kusto) account login issues" />
@@ -16,12 +16,12 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing ADX (Kusto) account login issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Trouble Shooting ADX (Kusto) login issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing ADX (Kusto) account login issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting ADX (Kusto) login issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blogs/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" /><link rel="shortcut icon" type="image/x-icon" href="/blogs/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Trouble Shooting ADX (Kusto) login issues | Herman’s Notebook</title>
+<title>Troubleshooting ADX (Kusto) login issues | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Trouble Shooting ADX (Kusto) login issues" />
+<meta property="og:title" content="Troubleshooting ADX (Kusto) login issues" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="notes about some learning from fixing ADX (Kusto) account login issues" />
 <meta property="og:description" content="notes about some learning from fixing ADX (Kusto) account login issues" />
@@ -32,7 +32,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing ADX (Kusto) account login issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Trouble Shooting ADX (Kusto) login issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing ADX (Kusto) account login issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting ADX (Kusto) login issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Trouble Shooting ADX (Kusto) login issues</h1><p class="page-description">notes about some learning from fixing ADX (Kusto) account login issues</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-03-17T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Troubleshooting  ADX (Kusto) login issues</h1><p class="page-description">notes about some learning from fixing ADX (Kusto) account login issues</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-03-17T00:00:00-05:00" itemprop="datePublished">
         Mar 17, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -112,7 +112,7 @@ window.onload = wrap_img;
     </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <h4 id="azure-data-explorer-introduction">Azure Data Explorer Introduction</h4>
+    <h5 id="azure-data-explorer-introduction">Azure Data Explorer Introduction</h5>
 
 <p><a href="https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview">ADX (Azure Data Explorer, aka Kusto)</a> is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers.</p>
 
@@ -137,7 +137,7 @@ T
 <p>You can also easily generate a graphic chart to visualize your query result through <a href="https://docs.microsoft.com/en-us/azure/kusto/query/renderoperator?pivots=azuredataexplorer">“render”</a> operator. In the previous query, you can add “| render timechar” to generate the following graph which represents the trend of how many records we have every 30 mins eleven days ago.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|render timechart 
 </code></pre></div></div>
-<p><img src=".https://Herman-Wu.github.io/blogs/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg" alt="img" /></p>
 
 <p>For data consumers ADX also provides various client tool that users can use to create different kind of query, graphic chart and dashboard. The tool that support ADX includes :</p>
 <ul>
@@ -150,7 +150,7 @@ T
   <li><a href="https://github.com/Azure/azure-kusto-spark">Spark</a>   .</li>
 </ul>
 
-<h4 id="azure-data-explorer-access-control">Azure Data Explorer Access Control</h4>
+<h5 id="azure-data-explorer-access-control">Azure Data Explorer Access Control</h5>
 
 <p>In the access control part, ADX supports user authentication through Microsoft Accounts (MSAs) and Azure AD account. Microsoft Account is non-organizational user accounts, these accounts normally use email like hotmail.com, live.com, outlook.com. Azure AD account is created through Azure AD or another Microsoft cloud service such as Office 365. It will be tight to an Azure AD tenant and is the preferred method for authenticating to ADX.  Most enterprise users should use AAD account for authentication. Here has more information about <a href="https://docs.microsoft.com/zh-tw/azure/kusto/management/access-control/">ADX access control</a>.</p>
 
@@ -167,7 +167,7 @@ T
 
 <p>ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects.</p>
 
-<h4 id="trouble-shooting-azuer-data-explorer-user-authentication-issue">Trouble Shooting Azuer Data Explorer user authentication issue</h4>
+<h5 id="trouble-shooting-azuer-data-explorer-user-authentication-issue">Trouble Shooting Azuer Data Explorer user authentication issue</h5>
 
 <p>Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. How ever it’s not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues.</p>
 
@@ -176,7 +176,7 @@ T
 
 <p>What happened is when you grant a new user to access ADX, if the user’s account comes from a different tenant, in ADX it will create a new Principle Object Id in its tenant. If the user access ADX in Azure portal, the user’s account already switches to the right tenant so there is no problem accessing ADX.</p>
 
-<h4 id="how-to-fix-the-issue">How to fix the issue</h4>
+<h5 id="how-to-fix-the-issue">How to fix the issue</h5>
 
 <p><em><strong>Solution A</strong>: Force ADX WebUI and Kusto Explorer to use not ADX’s tenant</em></p>
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2020-03-22T23:27:20-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Trouble Shooting ADX (Kusto) login issues</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" rel="alternate" type="text/html" title="Trouble Shooting ADX (Kusto) login issues" /><published>2020-03-17T00:00:00-05:00</published><updated>2020-03-17T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html">&lt;h4 id=&quot;azure-data-explorer-introduction&quot;&gt;Azure Data Explorer Introduction&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2020-03-22T23:37:06-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Troubleshooting ADX (Kusto) login issues</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" rel="alternate" type="text/html" title="Troubleshooting  ADX (Kusto) login issues" /><published>2020-03-17T00:00:00-05:00</published><updated>2020-03-17T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html">&lt;h5 id=&quot;azure-data-explorer-introduction&quot;&gt;Azure Data Explorer Introduction&lt;/h5&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview&quot;&gt;ADX (Azure Data Explorer, aka Kusto)&lt;/a&gt; is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers.&lt;/p&gt;
 
@@ -23,7 +23,7 @@ T
 &lt;p&gt;You can also easily generate a graphic chart to visualize your query result through &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/kusto/query/renderoperator?pivots=azuredataexplorer&quot;&gt;“render”&lt;/a&gt; operator. In the previous query, you can add “| render timechar” to generate the following graph which represents the trend of how many records we have every 30 mins eleven days ago.&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;|render timechart 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;.https://Herman-Wu.github.io/blogs/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For data consumers ADX also provides various client tool that users can use to create different kind of query, graphic chart and dashboard. The tool that support ADX includes :&lt;/p&gt;
 &lt;ul&gt;
@@ -36,7 +36,7 @@ T
   &lt;li&gt;&lt;a href=&quot;https://github.com/Azure/azure-kusto-spark&quot;&gt;Spark&lt;/a&gt;   .&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;azure-data-explorer-access-control&quot;&gt;Azure Data Explorer Access Control&lt;/h4&gt;
+&lt;h5 id=&quot;azure-data-explorer-access-control&quot;&gt;Azure Data Explorer Access Control&lt;/h5&gt;
 
 &lt;p&gt;In the access control part, ADX supports user authentication through Microsoft Accounts (MSAs) and Azure AD account. Microsoft Account is non-organizational user accounts, these accounts normally use email like hotmail.com, live.com, outlook.com. Azure AD account is created through Azure AD or another Microsoft cloud service such as Office 365. It will be tight to an Azure AD tenant and is the preferred method for authenticating to ADX.  Most enterprise users should use AAD account for authentication. Here has more information about &lt;a href=&quot;https://docs.microsoft.com/zh-tw/azure/kusto/management/access-control/&quot;&gt;ADX access control&lt;/a&gt;.&lt;/p&gt;
 
@@ -53,7 +53,7 @@ T
 
 &lt;p&gt;ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects.&lt;/p&gt;
 
-&lt;h4 id=&quot;trouble-shooting-azuer-data-explorer-user-authentication-issue&quot;&gt;Trouble Shooting Azuer Data Explorer user authentication issue&lt;/h4&gt;
+&lt;h5 id=&quot;trouble-shooting-azuer-data-explorer-user-authentication-issue&quot;&gt;Trouble Shooting Azuer Data Explorer user authentication issue&lt;/h5&gt;
 
 &lt;p&gt;Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. How ever it’s not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues.&lt;/p&gt;
 
@@ -62,7 +62,7 @@ T
 
 &lt;p&gt;What happened is when you grant a new user to access ADX, if the user’s account comes from a different tenant, in ADX it will create a new Principle Object Id in its tenant. If the user access ADX in Azure portal, the user’s account already switches to the right tenant so there is no problem accessing ADX.&lt;/p&gt;
 
-&lt;h4 id=&quot;how-to-fix-the-issue&quot;&gt;How to fix the issue&lt;/h4&gt;
+&lt;h5 id=&quot;how-to-fix-the-issue&quot;&gt;How to fix the issue&lt;/h5&gt;
 
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;Solution A&lt;/strong&gt;: Force ADX WebUI and Kusto Explorer to use not ADX’s tenant&lt;/em&gt;&lt;/p&gt;
 
