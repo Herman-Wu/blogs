@@ -1,5 +1,5 @@
 ---
-title: "Trouble Shooting ADX (Kusto) login issues"
+title: "Troubleshooting  ADX (Kusto) login issues"
 layout: post
 summary: "notes about some learning from fixing ADX (Kusto) account login issues  "
 description: notes about some learning from fixing ADX (Kusto) account login issues 
@@ -11,7 +11,7 @@ search_exclude: false
 categories: [Azure Data Explorer (Kusto),  Data]
 ---
 
-#### Azure Data Explorer Introduction
+##### Azure Data Explorer Introduction
 
 [ADX (Azure Data Explorer, aka Kusto)](https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview) is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers. 
 
@@ -38,7 +38,7 @@ You can also easily generate a graphic chart to visualize your query result thro
 ```
 |render timechart 
 ```
-![img](.{{ site.url }}{{ site.baseurl }}/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2020-03-17-TroubleShootingADXLoginIssues/kqlquerygraph.jpg)
 
 
 For data consumers ADX also provides various client tool that users can use to create different kind of query, graphic chart and dashboard. The tool that support ADX includes :
@@ -50,7 +50,7 @@ For data consumers ADX also provides various client tool that users can use to c
   - [Grafana](https://docs.microsoft.com/en-us/azure/data-explorer/grafana)
   - [Spark](https://github.com/Azure/azure-kusto-spark)   . 
 
-#### Azure Data Explorer Access Control
+##### Azure Data Explorer Access Control
 
 In the access control part, ADX supports user authentication through Microsoft Accounts (MSAs) and Azure AD account. Microsoft Account is non-organizational user accounts, these accounts normally use email like hotmail.com, live.com, outlook.com. Azure AD account is created through Azure AD or another Microsoft cloud service such as Office 365. It will be tight to an Azure AD tenant and is the preferred method for authenticating to ADX.  Most enterprise users should use AAD account for authentication. Here has more information about [ADX access control](https://docs.microsoft.com/zh-tw/azure/kusto/management/access-control/). 
 
@@ -70,7 +70,7 @@ You can read ADX [Security roles management](https://docs.microsoft.com/en-us/az
 ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects. 
 
 
-#### Trouble Shooting Azuer Data Explorer user authentication issue
+##### Trouble Shooting Azuer Data Explorer user authentication issue
 
 Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. How ever it's not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues. 
 
@@ -79,7 +79,7 @@ Ideally if you login your PC with Azure AD account that in the same tenant of th
 
 What happened is when you grant a new user to access ADX, if the user's account comes from a different tenant, in ADX it will create a new Principle Object Id in its tenant. If the user access ADX in Azure portal, the user's account already switches to the right tenant so there is no problem accessing ADX. 
 
-#### How to fix the issue
+##### How to fix the issue
 
 _**Solution A**: Force ADX WebUI and Kusto Explorer to use not ADX's tenant_
 
