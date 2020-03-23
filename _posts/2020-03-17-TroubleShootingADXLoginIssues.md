@@ -1,8 +1,8 @@
 ---
-title: "Troubleshooting  ADX (Kusto) login issues"
+title: "Troubleshooting  Azure Data Explorer (Kusto) login issues"
 layout: post
-summary: "notes about some learning from fixing ADX (Kusto) account login issues  "
-description: notes about some learning from fixing ADX (Kusto) account login issues 
+summary: "notes about some learning from fixing Azure Data Explorer (Kusto) account login issues  "
+description: notes about some learning from fixing Azure Data Explorer (Kusto) account login issues 
 toc: false
 comments: true
 image: https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg
@@ -13,7 +13,7 @@ categories: [Azure Data Explorer (Kusto),  Data]
 
 ##### Azure Data Explorer Introduction
 
-[ADX (Azure Data Explorer, aka Kusto)](https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview) is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers. 
+[Azure Data Explorer (ADX, aka Kusto)](https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview) is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers. 
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2020-03-17-TroubleShootingADXLoginIssues/ADXOverview.jpg)
 
@@ -72,12 +72,12 @@ ADX authentication is also the part I would like to share a few troubleshooting 
 
 ##### Trouble Shooting Azuer Data Explorer user authentication issue
 
-Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. How ever it's not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues. 
+Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. However it's not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues. 
 
 ##### The problem:
 *Grant a user to access ADX in Azure Portal UI. And the user can assess ADX in Azure portal. But he/she but couldn't access it in [ADX Web UI]((https://docs.microsoft.com/en-us/azure/data-explorer/web-query-data)) and [Kusto Explorer](https://docs.microsoft.com/en-us/azure/kusto/tools/kusto-explorer), PowerBI, Excel or other client tools.*
 
-What happened is when you grant a new user to access ADX, if the user's account comes from a different tenant, in ADX it will create a new Principle Object Id in its tenant. If the user access ADX in Azure portal, the user's account already switches to the right tenant so there is no problem accessing ADX. 
+What happened is when you grant a new user to access ADX, if the user's account comes from a different tenant, in ADX it will create a new Principle Object Id in its tenant. If the user access ADX in Azure portal, the user's account already switches to the right tenant so there is no problem accessing ADX. But if users from different tenant try to use other client tools, these client tools will use default tenant and which might not match the tenant that ADX is using.  
 
 ##### How to fix the issue
 
