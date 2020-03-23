@@ -3,12 +3,12 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues | Herman’s Notebook</title>
+<title>Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues" />
+<meta property="og:title" content="Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues" />
-<meta property="og:description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues" />
+<meta name="description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues" />
+<meta property="og:description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues" />
 <link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" />
 <meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" />
 <meta property="og:site_name" content="Herman’s Notebook" />
@@ -16,15 +16,15 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blogs/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" /><link rel="shortcut icon" type="image/x-icon" href="/blogs/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues | Herman’s Notebook</title>
+<title>Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues" />
+<meta property="og:title" content="Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues" />
-<meta property="og:description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues" />
+<meta name="description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues" />
+<meta property="og:description" content="notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues" />
 <link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" />
 <meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" />
 <meta property="og:site_name" content="Herman’s Notebook" />
@@ -32,7 +32,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-03-17T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html","headline":"Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues","dateModified":"2020-03-17T00:00:00-05:00","datePublished":"2020-03-17T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Troubleshooting  Azure Data Explorer (Kusto) cross tenant access issues</h1><p class="page-description">notes about some learning from fixing Azure Data Explorer (Kusto) cross tenant access issues</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-03-17T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Troubleshooting  Azure Data Explorer (Kusto) cross-tenant access issues</h1><p class="page-description">notes about some learning from fixing Azure Data Explorer (Kusto) cross-tenant access issues</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-03-17T00:00:00-05:00" itemprop="datePublished">
         Mar 17, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -167,7 +167,7 @@ T
 
 <p>ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects.</p>
 
-<h5 id="trouble-shooting-azuer-data-explorer-user-authentication-issue">Trouble Shooting Azuer Data Explorer user authentication issue</h5>
+<h5 id="azuer-data-explorer-cross-tenant-access-issue">Azuer Data Explorer cross-tenant access issue</h5>
 
 <p>Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. However it’s not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues.</p>
 
@@ -186,11 +186,11 @@ T
 
     <p>Default ADX WebUI has URL like</p>
 
-    <p>https://dataexplorer.azure.com/clusters/[cluster name].[data center]</p>
+    <p><em>https://dataexplorer.azure.com/clusters/[cluster name].[data center]</em></p>
 
     <p>You can force it to recognize a user’s login tenant by add &amp;tenant=[tenant id] to the URL. So it will look like</p>
 
-    <p>https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]</p>
+    <p><em>https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]</em></p>
   </li>
   <li>
     <p>Kusto Explorer Client</p>

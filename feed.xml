@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2020-03-22T23:52:50-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Troubleshooting Azure Data Explorer (Kusto) cross tenant access issues</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" rel="alternate" type="text/html" title="Troubleshooting  Azure Data Explorer (Kusto) cross tenant access issues" /><published>2020-03-17T00:00:00-05:00</published><updated>2020-03-17T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html">&lt;h5 id=&quot;azure-data-explorer-introduction&quot;&gt;Azure Data Explorer Introduction&lt;/h5&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2020-03-22T23:58:37-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Troubleshooting Azure Data Explorer (Kusto) cross-tenant access issues</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html" rel="alternate" type="text/html" title="Troubleshooting  Azure Data Explorer (Kusto) cross-tenant access issues" /><published>2020-03-17T00:00:00-05:00</published><updated>2020-03-17T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/03/17/TroubleShootingADXLoginIssues.html">&lt;h5 id=&quot;azure-data-explorer-introduction&quot;&gt;Azure Data Explorer Introduction&lt;/h5&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/data-explorer/data-explorer-overview&quot;&gt;Azure Data Explorer (ADX, aka Kusto)&lt;/a&gt; is a very powerfully log/historical data analysis platform provided by Microsoft that powers several key Azure services such as Application Insight, Azure Monitor, Time Series insight. It is designed to handle huge amounts of historical data and can ingest and process Peta-bytes of data every day with little efforts to set up the infrastructure. On February 7, 2019, Microsoft GA the service to customers.&lt;/p&gt;
 
@@ -53,7 +53,7 @@ T
 
 &lt;p&gt;ADX authentication is also the part I would like to share a few troubleshooting tips which  I learned from projects.&lt;/p&gt;
 
-&lt;h5 id=&quot;trouble-shooting-azuer-data-explorer-user-authentication-issue&quot;&gt;Trouble Shooting Azuer Data Explorer user authentication issue&lt;/h5&gt;
+&lt;h5 id=&quot;azuer-data-explorer-cross-tenant-access-issue&quot;&gt;Azuer Data Explorer cross-tenant access issue&lt;/h5&gt;
 
 &lt;p&gt;Ideally if you login your PC with Azure AD account that in the same tenant of the Azure subscription which been used to create the ADX cluster, then everything should work good and you can just management user access in Azure Portal. However it’s not always the case, users can come from different organizations and partners. Here are a few ways we used to check and fix the issues.&lt;/p&gt;
 
@@ -72,11 +72,11 @@ T
 
     &lt;p&gt;Default ADX WebUI has URL like&lt;/p&gt;
 
-    &lt;p&gt;https://dataexplorer.azure.com/clusters/[cluster name].[data center]&lt;/p&gt;
+    &lt;p&gt;&lt;em&gt;https://dataexplorer.azure.com/clusters/[cluster name].[data center]&lt;/em&gt;&lt;/p&gt;
 
     &lt;p&gt;You can force it to recognize a user’s login tenant by add &amp;amp;tenant=[tenant id] to the URL. So it will look like&lt;/p&gt;
 
-    &lt;p&gt;https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]&lt;/p&gt;
+    &lt;p&gt;&lt;em&gt;https://dataexplorer.azure.com/clusters/[cluster name].[data center]?tenant=[tenant id]&lt;/em&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Kusto Explorer Client&lt;/p&gt;
