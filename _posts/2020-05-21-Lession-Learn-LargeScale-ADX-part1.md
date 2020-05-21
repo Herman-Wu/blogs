@@ -79,7 +79,7 @@ One of the key strength of ADX is it's powerful query language [Kusto Query Lang
 
 _It's always good the validate what's your key query scenarios and try how different query syntax impact the query performance._ 
 
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ADX_SKU.JPG)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/KustoExpQuery.png)
 
 You can review the query performance using [Kusto.Explorer tool](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/tools/kusto-explorer) or [ADX Web UI](https://dataexplorer.azure.com/). You can also use [.show queries](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/queries) operator to review performance of  historical queries. 
 
@@ -88,30 +88,3 @@ You can review the query performance using [Kusto.Explorer tool](https://docs.mi
 
 
 ... to be continued 
-
-
-##### Lesson 6 Consider the query run in client side. 
-
-ADK is designed to process hundredes of gigbybte data or terabaybe data, when consider to fullfill query requirments for Application, we can consider to share some of workload to the Appication side. Especialy workload like sorting.  
-
-But for some workload like aggregation, you should consider how to leverage it. 
-
-
-
-
-
-
-##### Lesson 6 Check some advance table schema    
-
-ADX provide some new more advance configuration in Table schema like partition and row ordering. You need more performance, they are options you can try. But use them carefully, they will increase data ingestion time and consume more computing resources. Also partition has some side effect on extents management. 
-
-Also users should also consider to put data in differnt database difference. 
-
-##### Lesson 7 Check Server loading
-
-There a few core components/capablities in ADX. You can check them by using .show capacity.  
-
-##### Lesson 8 Review Security Setting 
-
-There are different security roles in ADX. It's good to review the security setting in your system.  ADX supports managed Identity.  
-Also 
