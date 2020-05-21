@@ -3,12 +3,12 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1 | Herman’s Notebook</title>
+<title>Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1 | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1" />
+<meta property="og:title" content="Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer" />
-<meta property="og:description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer" />
+<meta name="description" content="notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer" />
+<meta property="og:description" content="notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer" />
 <link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html" />
 <meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html" />
 <meta property="og:site_name" content="Herman’s Notebook" />
@@ -16,15 +16,15 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-21T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html","headline":"Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html","headline":"Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blogs/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" /><link rel="shortcut icon" type="image/x-icon" href="/blogs/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1 | Herman’s Notebook</title>
+<title>Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1 | Herman’s Notebook</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1" />
+<meta property="og:title" content="Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer" />
-<meta property="og:description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer" />
+<meta name="description" content="notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer" />
+<meta property="og:description" content="notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer" />
 <link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html" />
 <meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html" />
 <meta property="og:site_name" content="Herman’s Notebook" />
@@ -32,7 +32,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-21T00:00:00-05:00" />
 <script type="application/ld+json">
-{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html","headline":"Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html","headline":"Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -87,7 +87,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 1</h1><p class="page-description">notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data  usng Microsoft Azure Data Explorer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-21T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1</h1><p class="page-description">notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-21T00:00:00-05:00" itemprop="datePublished">
         May 21, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -112,11 +112,11 @@ window.onload = wrap_img;
     </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>Recently I had a opportunity to participate another data project that also uses <a href="https://azure.microsoft.com/en-in/services/data-explorer/">Azure Data Explorer</a>(ADX) as the core data process and store engine. In this project we used ADX to ingest and process more than half of petabytes data. Like most projects we were under some time and resources constrains, and also encountered a few unexpected technical challenges due to the contrains . Though we couldn’t implement the system using the best optimized architecture (it will take too much time than the project was allowed), we still managed to achieve the project goal. It’s a exciting and fun journey and here are a few lesions we learned.</p>
+    <p>Recently I had an opportunity to participate in another data project that also uses <a href="https://azure.microsoft.com/en-in/services/data-explorer/">Azure Data Explorer</a>(ADX) as the core data process and store engine. In this project we used ADX to ingest and process more than half of petabytes data. Like most projects we were under some time and resource constraints, and also encountered a few unexpected technical challenges due to the constraints. Though we couldn’t implement the system using the best-optimized architecture (it will take too much time than the project was allowed), we still managed to achieve the project goal. It’s an exciting and fun journey and here are a few lessons we learned.</p>
 
 <h5 id="lesson-1-select-proper-sku">Lesson 1 Select proper SKU</h5>
 
-<p>There are couple different <a href="https://docs.microsoft.com/en-us/azure/data-explorer/manage-cluster-choose-sku">SKU options for ADX</a>, some are more CPU optimized like D-Series (D-series, Ds-series) VM, they have more powerful CPU; some are more storage optimized like Ls-Serious VM, they are equipped with larger SSD to achieve more I/O performance. <em>Have a testing plan to test the key user query patterns on these different type of VMs and check which one is best for your query workload can benefit the project in the long run.</em></p>
+<p>There are couples different <a href="https://docs.microsoft.com/en-us/azure/data-explorer/manage-cluster-choose-sku">SKU options for ADX</a>, some are more CPU optimized like D-Series (D-series, Ds-series) VM, they have more powerful CPU; some are more storage optimized like Ls-Serious VM, they are equipped with larger SSD to achieve more I/O performance. <em>Have a testing plan to test the key user query patterns on these different type of VMs and check which one is best for your query workload can benefit the project in the long run.</em></p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ADX_SKU.JPG" alt="img" /></p>
 
@@ -124,16 +124,16 @@ window.onload = wrap_img;
 
 <p>In Azure Data Explorer, it supports several different ingestion solutions, the decision will depend on the purpose and stage of your development. You can check <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/data-ingestion/#ingestion-methods">here</a> for detail information of these solutions.</p>
 
-<p>It’s better to read through the official document, understand their differences before make a decision. Mean while, here are a few thumb rules:</p>
+<p>It’s better to read through the official document, understand their differences before making a decision. Meanwhile, here are a few thumb rules:</p>
 
 <ul>
   <li>For query testings, verifying scripts, tables, you can use <strong>Inline ingestion (push)</strong></li>
-  <li>For adhoc feature engineering, data cleaning, you can use <strong>Ingest from query</strong></li>
+  <li>For ad-hoc feature engineering, data cleaning, you can use <strong>Ingest from query</strong></li>
   <li>For ingestion testing, create some volumes of data, you can use <strong>Ingest from storage (pull)</strong></li>
-  <li>For production ingestion pipeline testiong, I normally will use <strong>Queued ingestion</strong>. ADX recently added</li>
+  <li>For production ingestion pipeline testing, I normally will use <strong>Queued ingestion</strong>. ADX recently added</li>
 </ul>
 
-<p>In addition to above basic ingestion options, you can also check following options based on your scenario and environment.</p>
+<p>In addition to the above basic ingestion options, you can also check the following options based on your scenario and environment.</p>
 
 <ul>
   <li><a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/data-ingestion/eventgrid">Ingest from storage using Event Grid subscription</a></li>
@@ -141,45 +141,45 @@ window.onload = wrap_img;
   <li><a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/data-ingestion/iothub">Ingest from IoT Hub</a></li>
 </ul>
 
-<p>And there is a new ingestion opition <a href="https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-one-click">One-Click Ingestion</a> which are just been announced in <a href="https://mybuild.microsoft.com/">Microsoft Build 2020</a>.</p>
+<p>And there is a new ingestion option <a href="https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-one-click">One-Click Ingestion</a> which are just been announced in <a href="https://mybuild.microsoft.com/">Microsoft Build 2020</a>.</p>
 
 <p>Eeek, a lot of choices. :p</p>
 
 <h5 id="lesson-3-have-a-clean-ingestion-pipeline">Lesson 3 Have a clean ingestion pipeline</h5>
 
-<p>Normally when trying to ingest data into data repository, we might need to do some data pre-process such as check file format, clean dirty data, do a few data transformation etc. Azure Data Explorer provides some of these capabilities through <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/functions/user-defined-functions">User-defined function</a> and <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/update-policy">update policy</a>. You can use these mechanism to quickly perform some data pre-process tasks within ADX without setup extra computing services to handle it.</p>
+<p>Normally when trying to ingest data into a data repository, we might need to do some data pre-process such as check file format, clean dirty data, do a few data transformation, etc. Azure Data Explorer provides some of these capabilities through <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/functions/user-defined-functions">User-defined function</a> and <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/update-policy">update policy</a>. You can use these mechanisms to quickly perform some data pre-process tasks within ADX without setup extra computing services to handle it.</p>
 
-<p>While these are convenient ways to massage data, it will occupy ADX’s resources and potentially introduce more data fragmentation. There are complex mechanisms within ADX to optimize the resources it has, maintain and organize data in it’s storage and keep system in healthy status.</p>
+<p>While these are convenient ways to massage data, it will occupy ADX’s resources and potentially introduce more data fragmentation. There are complex mechanisms within ADX to optimize the resources it has, maintains and organize data in its storage and keep the system in a healthy status.</p>
 
-<p>Under the condition that data ingestion volume is big, these data pipeline activities could impact the resource available for ADX to handle queries or do internal housekeeping tasks. You might need to carefully monitor ADX status and do a few fine tune on it’s configuration. While I did use these mechanisms for other smaller scale projects and love it, <em>it is still a better practice just to keep the data pre-process tasks outside of ADX in large scale project, at least before you are very familiar each internal mechanisms within ADX.)</em></p>
+<p>Under the condition that data ingestion volume is big, these data pipeline activities could impact the resource available for ADX to handle queries or do internal housekeeping tasks. You might need to carefully monitor ADX status and do a few fine tunes on its configuration. While I did use these mechanisms for other smaller-scale projects and love it, <em>it is still a better practice just to keep the data pre-process tasks outside of ADX in large scale project, at least before you are very familiar each internal mechanisms within ADX.)</em></p>
 
-<p>Data Factory, Databricks, Azure Functions/App servicesc, AKS, HDInsight provide good funtational capabilities to pre-process data.</p>
+<p>Data Factory, Databricks, Azure Functions/App services, AKS, HDInsight provide good foundational capabilities to pre-process data.</p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/Ingest.png" alt="img" /></p>
 
-<p>In <a href="https://github.com/Herman-Wu/ADXAutoFileIngestion">my git project</a> I shared some codes that I used Azure Funtions to do Queued ingestion.</p>
+<p>In <a href="https://github.com/Herman-Wu/ADXAutoFileIngestion">my git project</a> I shared some codes that I used Azure Functions to do Queued ingestion.</p>
 
 <h5 id="lesson-4-evaluate-the-horizontal-scale--of-servers-needed">Lesson 4 Evaluate the horizontal scale (# of servers) needed</h5>
 
-<p>When planing system roll out, an solid estimation of the number of servers needed and a well estimated expansion plan for the future is important. It can also help saving cost by preventing under-utilization and provide valuable information for system design. System <a href="https://docs.microsoft.com/en-us/azure/data-explorer/manage-cluster-horizontal-scaling">scale out/ horizontal scaling</a> is one of the core capabilities that we can make sure the system can be adaptive to the workload and provide just enough resource to the users. In our test, one of key ADX features that users love is it can provide almost linear performance growth when scale out. ADX also provides non-destructive services when scale out.</p>
+<p>When planning system roll-out, a solid estimation of the number of servers needed and a well-estimated expansion plan for the future is important. It can also help save costs by preventing under-utilization and provide valuable information for system design. System <a href="https://docs.microsoft.com/en-us/azure/data-explorer/manage-cluster-horizontal-scaling">scale out/ horizontal scaling</a> is one of the core capabilities that we can make sure the system can be adaptive to the workload and provide just enough resource to the users. In our test, one of the key ADX features that users love is it can provide almost linear performance growth when scaling out. ADX also provides non-destructive services when scaling out.</p>
 
 <p><img src="https://docs.microsoft.com/en-us/azure/data-explorer/media/manage-cluster-horizontal-scaling/manual-scale-method.png" alt="img" /></p>
 
-<p><em>It’s suggested that you should run a few workload simulation and test about how the scale out can increase your system capabilities.</em></p>
+<p><em>It’s suggested that you should run a few workload simulations and test about how the scale-out can increase your system capabilities.</em></p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/QueryPerf01.png" alt="img" /></p>
 
-<p>ACI and AKS can be helpful if you want to simulate system workload.</p>
+<p>ACI and AKS can be helpful if you want to simulate the system workload.</p>
 
 <h5 id="lesson-5-understand-and-test-kql-query-performance">Lesson 5 Understand and test KQL query performance</h5>
 
-<p>One of the key strength of ADX is it’s powerful query language <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/">Kusto Query Language</a> (KQL). Like most of other data query languages, some query operators in KQL are similar, give you same result but could have huge different in performance.</p>
+<p>One of the key strengths of ADX is its powerful query language <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/">Kusto Query Language</a> (KQL). Like most other data query languages, some query operators in KQL are similar, give you the same result but could have a huge difference in performance.</p>
 
 <p><em>It’s always good the validate what’s your key query scenarios and try how different query syntax impact the query performance.</em></p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/KustoExpQuery.png" alt="img" /></p>
 
-<p>You can review the query performance using <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/tools/kusto-explorer">Kusto.Explorer tool</a> or <a href="https://dataexplorer.azure.com/">ADX Web UI</a>. You can also use <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/queries">.show queries</a> operator to review performance of  historical queries.</p>
+<p>You can review the query performance using <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/tools/kusto-explorer">Kusto.Explorer tool</a> or <a href="https://dataexplorer.azure.com/">ADX Web UI</a>. You can also use <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/queries">.show queries</a> operator to review the performance of historical queries.</p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ShowQueries.png" alt="img" /></p>
 
