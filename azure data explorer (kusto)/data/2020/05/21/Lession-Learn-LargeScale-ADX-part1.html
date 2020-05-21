@@ -93,7 +93,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      5 min read
+      4 min read
     
 </span></p>
 
@@ -177,34 +177,13 @@ window.onload = wrap_img;
 
 <p><em>It’s always good the validate what’s your key query scenarios and try how different query syntax impact the query performance.</em></p>
 
-<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ADX_SKU.JPG" alt="img" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/KustoExpQuery.png" alt="img" /></p>
 
 <p>You can review the query performance using <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/tools/kusto-explorer">Kusto.Explorer tool</a> or <a href="https://dataexplorer.azure.com/">ADX Web UI</a>. You can also use <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/queries">.show queries</a> operator to review performance of  historical queries.</p>
 
 <p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ShowQueries.png" alt="img" /></p>
 
 <p>… to be continued</p>
-
-<h5 id="lesson-6-consider-the-query-run-in-client-side">Lesson 6 Consider the query run in client side.</h5>
-
-<p>ADK is designed to process hundredes of gigbybte data or terabaybe data, when consider to fullfill query requirments for Application, we can consider to share some of workload to the Appication side. Especialy workload like sorting.</p>
-
-<p>But for some workload like aggregation, you should consider how to leverage it.</p>
-
-<h5 id="lesson-6-check-some-advance-table-schema">Lesson 6 Check some advance table schema</h5>
-
-<p>ADX provide some new more advance configuration in Table schema like partition and row ordering. You need more performance, they are options you can try. But use them carefully, they will increase data ingestion time and consume more computing resources. Also partition has some side effect on extents management.</p>
-
-<p>Also users should also consider to put data in differnt database difference.</p>
-
-<h5 id="lesson-7-check-server-loading">Lesson 7 Check Server loading</h5>
-
-<p>There a few core components/capablities in ADX. You can check them by using .show capacity.</p>
-
-<h5 id="lesson-8-review-security-setting">Lesson 8 Review Security Setting</h5>
-
-<p>There are different security roles in ADX. It’s good to review the security setting in your system.  ADX supports managed Identity.<br />
-Also</p>
 
   </div><!-- from https://github.com/utterance/utterances -->
 <script src="https://utteranc.es/client.js"
