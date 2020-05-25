@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2 | Herman’s Notebook</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II" />
+<meta property="og:description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II" />
+<link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html" />
+<meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html" />
+<meta property="og:site_name" content="Herman’s Notebook" />
+<meta property="og:image" content="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-25T00:00:00-05:00" />
+<script type="application/ld+json">
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html","headline":"Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2","dateModified":"2020-05-25T00:00:00-05:00","datePublished":"2020-05-25T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blogs/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" /><link rel="shortcut icon" type="image/x-icon" href="/blogs/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2 | Herman’s Notebook</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II" />
+<meta property="og:description" content="notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II" />
+<link rel="canonical" href="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html" />
+<meta property="og:url" content="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html" />
+<meta property="og:site_name" content="Herman’s Notebook" />
+<meta property="og:image" content="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-25T00:00:00-05:00" />
+<script type="application/ld+json">
+{"image":"https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg","description":"notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html"},"@type":"BlogPosting","url":"https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html","headline":"Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2","dateModified":"2020-05-25T00:00:00-05:00","datePublished":"2020-05-25T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blogs/">Herman&#39;s Notebook</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blogs/about/">About Me</a><a class="page-link" href="/blogs/search/">Search</a><a class="page-link" href="/blogs/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2</h1><p class="page-description">notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data  usng Microsoft Azure Data Explorer - Part II</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-25T00:00:00-05:00" itemprop="datePublished">
+        May 25, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blogs/categories/#Azure Data Explorer">Azure Data Explorer</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#Kusto">Kusto</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#Data">Data</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#KQL">KQL</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#Azure">Azure</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>[<em>This is the part II of the topic, you can check <a href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html">Part I</a> if you haven’t.</em>]</p>
+
+<p>I have mentioned <a href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html">5 basic lessons</a> I learned from my recent project that has hundreds of petabytes data. In this <strong>part II</strong> I would like to share a few more advanced lessons.</p>
+
+<h5 id="lesson-6-consider-guiding-users-to-submit-the-right-queries-and-think-about-having-some-data-process-running-on-the-client-side">Lesson 6 Consider guiding users to submit the right queries and think about having some data process running on the client-side</h5>
+
+<p><a href="https://azure.microsoft.com/en-in/services/data-explorer/">Azure Data Explorer</a>(ADX) is designed to process a huge amount of data. It can efficiently handle hundreds of terabytes data or even petabytes data. Data is a very valuable asset especially when you have a lot of them. These data can support users to find hidden business trends, detect anomaly events, identify correlation things from these data.</p>
+
+<p>However with so much data in your system’s back yard, you also need to make sure users will access them in the right way because users might not have a good sense of how much data they are trying to process. So we should guide and prevent users from unconsciously trying to retrieve 100 gigabytes of data to their web browser or trying to get 1 million records to their client just for showing a line chart. Helping users to use aggregation and return data in just enough granularity for their business needs can largely reduce system workload and improve performance.</p>
+
+<p>Also you should consider using the user’s client to share some data process loading of ADX. For example, users might want to sort the result by some specific columns, this can be easily implemented on the client-side. It’s also easier to do data paging in client slides then resubmit queries for each page.</p>
+
+<p>In ADX it provides some mechanisms such as <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/concepts/querylimits#limit-on-result-set-size-result-truncation">result set size</a>, <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/concepts/querylimits#limit-on-request-execution-time-timeout">request execution time</a> to prevent system resource been occupied by some bad queries. You can also use these mechanisms to prevent some queries to take too many resources from the system or grant more resources to some special queries.</p>
+
+<h5 id="lesson-7-check-some-advance-table-policy">Lesson 7 Check some advance table policy</h5>
+
+<p>To further provide better query performance, ADX now provides some new more advanced configuration in Table policies such as <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/partitioningpolicy">Data partitioning policy</a> and <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/roworder-policy">RowOrder policy</a>. If you need to improve query response time, they are options you can try. But using them carefully, <strong>they will increase data ingestion time and consume more computing resources</strong>. Also, partition has some side effect on extents management and need more resources to run the policy.</p>
+
+<p>The other consideration is the choice between putting data in different tables or different databases. This choice will impact the following areas in system design:</p>
+<ul>
+  <li>Data Access Control</li>
+  <li>Admin node workload</li>
+  <li>Data sharing mechanism</li>
+</ul>
+
+<p>Users should consider putting data in different databases when you want to have more flexibility to manage and share data. Also when the data volume is big, having multiple databases can enjoy the benefit of having different Admin nodes for each database and then have more resources to maintaining data metadata and perform transactions.</p>
+
+<h5 id="lesson-8-check-server-loading-and-very-very-carefully-tuning-some-of-them-if-needed">Lesson 8 Check Server loading and very very carefully tuning some of them if needed.</h5>
+
+<p>To handle data ingestion and query workload, ADX has several mechanisms to balance the resources used to support different operation and maintenance workload.</p>
+
+<p>For data management operations, you can use <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/capacitypolicy">.show capacity</a> to quickly show the resources utilization of these core capabilities.</p>
+
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-25-Lession-Learn-LargeScale-ADX-part2/show_capacity.png" alt="img" /></p>
+
+<p>In most cases the official recommendation is <strong>just leave the setting as is, the default setting should be able to handle most of the situations</strong> and they will keep each resource utilization balanced. If in some cases if you thought you really need to change these values, it’s also recommended to at least check and ask in <a href="https://stackoverflow.com/questions/tagged/kusto">stackoverflow</a> to have some experts to double verify it.</p>
+
+<p>Also you might also want to check the Extents number and its growth in your system. Extents are the core data allocation unit within ADX, ADX will try to organize it in the best way to fulfill both data ingestion needs and data query needs. If for some reason too much extends are created, it will increases the loading of ADX admin node and potential will impact system performance. For a large system it’s a good practice to keep an eye on it.</p>
+
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-25-Lession-Learn-LargeScale-ADX-part2/total_extents.png" alt="img" /></p>
+
+<h5 id="lesson-9-optimize-the-kql-query-plan-for-the-long-queries-and-review-cache-policy">Lesson 9 Optimize the KQL query plan for the long queries and review cache policy</h5>
+<p>Though we mentioned how different query syntax could impact query performance in  <a href="https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html">Understand and test KQL query performance session of Part I</a>, here I want to talk about KQL query plan.</p>
+
+<p>In Kusto Explorer, there is a build-in tool named Query Analyzer which provides extra information on how your KQL runs. You can use them to understand how the query actually being executed, if your query can run in parallel on all the nodes, if the query filter efficiently reduces data retrieval volumes or if the data join.</p>
+
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-25-Lession-Learn-LargeScale-ADX-part2/execprofile.png" alt="img" /></p>
+
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2020-05-25-Lession-Learn-LargeScale-ADX-part2/reloptree.png" alt="img" /></p>
+
+<p>Also by design initially (before the cluster is running) all the data are stored on cold storage (Azure Blob storage). When the cluster starts, cluster nodes will load all these hot data (defined by <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/cachepolicy">Cache policy</a>) data into local SSD and memory so they become hot data and can be quickly accessed. Review the cache hit rate of popular queries and check if the cache policy is properly defined can potentially have a good boost of performance.</p>
+
+<h5 id="lesson-10-review-security-setting">Lesson 10 Review Security Setting</h5>
+
+<p>Last but not least, Security. ADX can use both Azure AD and Microsoft Account (MSAs) as the identity providers. And we also need to have a plan for user authentication and <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/access-control/how-to-provision-aad-app">application authentication</a>.</p>
+
+<p>There are different <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/access-control/role-based-authorization">security roles</a> in ADX. It’s good to review the security setting in your system and make sure you have separation of concerns for your account and security planning.</p>
+
+<p><br />
+<br /></p>
+
+<p>Azure Data Explorer is a very powerful tool for analyzing historical log or telemetries data. In many cases we saw it provide a more cost-effective and more powerful query tool to fulfill users’ business needs.</p>
+
+<p>Above are 10 lessons I thought are important when implementing a large scale data analysis platform when using Azure Data Explorer. The best way to understand the detail of them is still read through the official documents. But these lessons might provide you a quick bird’s-eye view of what you should check and look.</p>
+
+<p><strong>[Reference]</strong></p>
+
+<p><a href="https://github.com/Azure-Samples/kusto-high-scale-ingestion/blob/master/processing/README.md">- kusto-high-scale-ingestion</a></p>
+
+<p><a href="https://azure.microsoft.com/en-ca/resources/azure-data-explorer/">- Azure Data Explorer technical white paper</a></p>
+
+<p><a href="https://yonileibowitz.github.io/kusto.blog/blog-posts/update-policies.html">- Update policies for in-place ETL in Kusto (Azure Data Explorer)</a></p>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="Herman-Wu/blogs"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blogs/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blogs/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blogs/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Here is the repository of notes that I would like to remember and share</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Herman-Wu" title="Herman-Wu"><svg class="svg-icon grey"><use xlink:href="/blogs/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/hermanwu01" title="hermanwu01"><svg class="svg-icon grey"><use xlink:href="/blogs/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
