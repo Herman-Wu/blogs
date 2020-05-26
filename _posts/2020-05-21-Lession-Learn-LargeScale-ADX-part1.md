@@ -8,7 +8,7 @@ comments: true
 image: https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg
 hide: false
 search_exclude: false
-categories: [Azure Data Explorer (Kusto),  Data]
+categories: [Azure Data Explorer, Kusto, Data, KQL, Azure]
 ---
 
 Recently I had an opportunity to participate in another data project that also uses [Azure Data Explorer](https://azure.microsoft.com/en-in/services/data-explorer/)(ADX) as the core data process and store engine. In this project we used ADX to ingest and process more than half of petabytes data. Like most projects we were under some time and resource constraints, and also encountered a few unexpected technical challenges due to the constraints. Though we couldn't implement the system using the best-optimized architecture (it will take too much time than the project was allowed), we still managed to achieve the project goal. It's an exciting and fun journey and here are a few lessons we learned. 
