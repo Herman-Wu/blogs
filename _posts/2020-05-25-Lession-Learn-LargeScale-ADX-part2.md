@@ -1,5 +1,5 @@
 ---
-title: "Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2"
+title: "Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 2"
 layout: post
 summary: "notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data usng Microsoft Azure Data Explorer - Part II"
 description: notes about some lession learn from buiding a large scale historical data analysis system that has hundres of terabytes data  usng Microsoft Azure Data Explorer - Part II
