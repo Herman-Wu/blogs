@@ -2,7 +2,7 @@
 title: "Lessons learned from building a large scale historical data analysis system using Azure Data Explorer - Part 1"
 layout: post
 summary: "notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer"
-description: notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer
+description: notes about some lesson learned from building a large scale historical data analysis system that has hundreds of terabytes data using Microsoft Azure Data Explorer - Part I
 toc: false
 comments: true
 image: https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg
