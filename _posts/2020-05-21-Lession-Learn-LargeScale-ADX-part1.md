@@ -84,6 +84,9 @@ You can review the query performance using [Kusto.Explorer tool](https://docs.mi
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2020-05-21-Lession-Learn-LargeScale-ADX-part1/ShowQueries.png)
 
+<br>
+<br>
 
+_.. to be continued_ 
 
-... to be continued 
+[Lessions learned from buiding a large scale historical data analysis system using Azure Data Explorer - Part 2](https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/kql/azure/2020/05/25/Lession-Learn-LargeScale-ADX-part2.html)
