@@ -29,7 +29,7 @@ It's better to read through the official document, understand their differences 
 * For query testings, verifying scripts, tables, you can use __Inline ingestion (push)__
 * For ad-hoc feature engineering, data cleaning, you can use __Ingest from query__
 * For ingestion testing, create some volumes of data, you can use __Ingest from storage (pull)__
-* For production ingestion pipeline testing, I normally will use __Queued ingestion__. ADX recently added 
+* For production ingestion pipeline testing, I normally will use __Queued ingestion__.  
 
 In addition to the above basic ingestion options, you can also check the following options based on your scenario and environment. 
 

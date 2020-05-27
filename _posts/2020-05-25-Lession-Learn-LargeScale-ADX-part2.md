@@ -13,7 +13,7 @@ categories: [Azure Data Explorer, Kusto, Data, KQL, Azure]
 
 [_This is the part II of the topic, you can check [Part I](https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html) if you haven't._]
 
-I have mentioned [5 basic lessons](https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html) I learned from my recent project that has hundreds of petabytes data. In this __part II__ I would like to share a few more advanced lessons.  
+I have mentioned [5 basic lessons](https://herman-wu.github.io/blogs/azure%20data%20explorer%20(kusto)/data/2020/05/21/Lession-Learn-LargeScale-ADX-part1.html) I learned from my recent project that has hundreds of terabytes data. In this __part II__ I would like to share a few more advanced lessons.  
 
 
 ##### Lesson 6 Consider guiding users to submit the right queries and think about having some data process running on the client-side 
