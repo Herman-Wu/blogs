@@ -1,11 +1,12 @@
-# Reflection of my 2020 Data Projects (Part II)
-### - _Lessons I learned and want to keep in mind in 2021+_
+# Reflections on my 2020 Data Projects  - Part II
+###  _Lessons I learned and want to keep in mind in 2021+_
 
 ___<< Part-I___ 
 
 ### #6 Every small problem can be BIG
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/quarantine-4981010_640.jpg)
+<br>
 Image by <a href="https://pixabay.com/users/evgenit-4930349/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Evgeni Tcherkasski</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Pixabay</a>
 
 When we were developing solutions for different projects, we normally start with implementing the functional logic that fulfill the design and we used small volumes of data for validate the functionality. Besides these functional development tasks,  there are a few things that deserve our additional attention because they  could impact the stability of the system when the system is running in full scale and handles production workload during peak time.
@@ -25,6 +26,7 @@ The most common practice to handle network failure is to resend and retry the ne
 ### #7 End-to-End Testing 
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/test-4092025_1920.jpg)
+<br>
 Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4092025">Gerd Altmann</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4092025">Pixabay</a>
 
 Testing is a huge topic and it will/should occupy at least nearly half amount of the developing team's resources. Since projects always don't have enough time to do perfect testing, we can only try to spend our limited time on the parts that most likely go wrong and is critical to the system. _In data project, we realized tranditional unit test and system integration is not enough to verify the solution quality_.  
@@ -54,10 +56,8 @@ The other pratice is to integrated load testing environment into CI/CD pipeline,
 
 ####  <u>Centralize Performance Metrics and Perpare Dashboard</u>: 
 Since there are serveral components in the system, each components have different performance metrics which come with quite different measure unit and meaning, it's easier to have a centralize place to query and view all these metrics. 
-![test](./img-2020-Data/dashboard-all.png)
 
-
-
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/dashboard-all.png)
 
 
 ### #8 Measure your Data Drift 
@@ -79,6 +79,7 @@ _"Chaos engineering is the discipline of experimenting on a software system in p
 Chaos Engineering is initially proposed by Netflix in 2010 because they wanted a better way to test and improve the reliability of their distributed microservice system. They found the process to finding faults in a distributed system goes beyond the capability of standard application testing. In stead of testing single failure point, the goal of chaos engineering is to generate new knowledge about inter-connections and impacts between components in the system. 
 
 ![HowChaosEngineeringWork](https://phoenixnap.com/blog/wp-content/uploads/2020/10/how-chaos-engineering-works.jpg)
+<br>
 _image credit: [Chaos Engineering: How it Works, Principles, Benefits, & Tools](https://phoenixnap.com/blog/chaos-engineering)._
 
 Though we have mentioned several key learnings and some of them learned from issues of production system, improve system resilience is a continuous learning journey and there are still a lot parts can be explored and enhanced. Through chaos engineering we can learn the system  behavior systematically and understand how it responses to the turbulence in production.  For large data project, it definite worth to include the chaos engineering tools and practices not only during system developing but also for long terms system operation. 

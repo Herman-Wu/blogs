@@ -1,5 +1,5 @@
 # Reflections on my 2020 Data Projects  - Part I 
-### - _Lessons I learned and want to keep in mind in 2021+_
+###  _Lessons I learned and want to keep in mind in 2021+_
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)<br>
 Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a>
@@ -41,7 +41,7 @@ Here are some common factors to consider:
 - __Visualization Tools__:  Some teams may have strong Excel skill, they are flunent in using power pivot and functions in Excel to generate in-depth interactive report. Some team like the advanced graphical presentation provided by dashboard/reporting tools such as PowerBI, Tableau. Some teams like the powerful programmability in Jupyter Notebook or Shinny. Also most of data platforms will also provide it's own build-in tool to visualize data. For example, Azure Data Explore provides very handy and power charting capabilities for historical log data and time series data analysis.  
 ![AzureDataExplorer-Chart](https://docs.microsoft.com/en-us/azure/data-explorer/media/time-series-analysis/time-series-operations.png)
 <br>
-_<p align="center">Residual time series chart in Azure Data Explorer</p>_ 
+_Residual time series chart in Azure Data Explorer_ 
 
 - __Data Post Processing/Query Tools and Languages__: Data consumers will need to further process data to fulfill their analytic requirements. Languages like SQL, R and Python (ok, you can also add Julia) are very common and powerful ones that data analyzers use to further "[__massage data__](https://stackoverflow.com/questions/577892/what-does-data-massage-mean)". But each analysis domain has it's own unique data processing pattern. Based on different design purposes,  _different data platforms also provides their own data query syntax and query engine to support and simplify data post-processing for specific domains_. Understand the strength of each platform and choose the best fit one is critical to project's success. For example, it's easy to implement complex text filtering and parsing in Elastic Search, but it's hard to implement complex data join and aggregation in it. The other example is  Azure Data Explorer, it focus on historical log data analytics and rovides very powrerful [Kusto Query Lanaguage](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/concepts/) to simply log parsing, aggreation, data join and semi-structure data processing. It is one of my favor query languages.  
 
