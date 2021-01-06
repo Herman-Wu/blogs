@@ -5,7 +5,7 @@ ___<< Part-I___
 
 ### #6 Every small problem can be BIG
 
-![matryoshka](./img-2020-Data/quarantine-4981010_640.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/quarantine-4981010_640.jpg)
 Image by <a href="https://pixabay.com/users/evgenit-4930349/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Evgeni Tcherkasski</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Pixabay</a>
 
 When we were developing solutions for different projects, we normally start with implementing the functional logic that fulfill the design and we used small volumes of data for validate the functionality. Besides these functional development tasks,  there are a few things that deserve our additional attention because they  could impact the stability of the system when the system is running in full scale and handles production workload during peak time.
@@ -24,7 +24,7 @@ The most common practice to handle network failure is to resend and retry the ne
 
 ### #7 End-to-End Testing 
 
-![test](./img-2020-Data/test-4092025_1920.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/test-4092025_1920.jpg)
 Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4092025">Gerd Altmann</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4092025">Pixabay</a>
 
 Testing is a huge topic and it will/should occupy at least nearly half amount of the developing team's resources. Since projects always don't have enough time to do perfect testing, we can only try to spend our limited time on the parts that most likely go wrong and is critical to the system. _In data project, we realized tranditional unit test and system integration is not enough to verify the solution quality_.  
@@ -66,7 +66,7 @@ Data Drift is a big issue in machine learning system, it means the profile and d
 
 When the data processing pipeline are design and tested, it also rely on the understanding of data to optimize the operation. Especially for data aggregation or classification operation, because by nature most data are not evenly distributed, the unbalance data (shew data) will introduce uneven workload that will cause low utilization of system resources. We will need to do some adjustment in order to shuffle data evenly. If data drift, it will break the optimization and could cause even worse unbanlance workload and reduce system efficeincy.  
 
-![data-finetune](./img-2020-Data/perf-fine-tune.png)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/perf-fine-tune.png)
 
 Considering to add some metrics to monitor data drift if some components in the system is sensitive and will be impacted by data characteristic change. For example, we monitored the running time distribution of some Spark tasks because they are sensitive to data distribution in our scenario. The other common practice is regualrly check statistic distribution of recent data. 
 

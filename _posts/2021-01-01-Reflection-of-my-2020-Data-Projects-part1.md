@@ -1,8 +1,7 @@
 # Reflection of my 2020 Data Projects  (Part I)
 ### - _Lessons I learned and want to keep in mind in 2021+_
 
-
-![img](./img-2020-Data/new-year-4768119_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)
 Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a>
 
 
@@ -30,7 +29,7 @@ _Most of the techniques actually share similar principles and can complement eac
 
 ### #2 _Design for Query & Charting_
 
-![img](./img-2020-Data/financial-2860753_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/financial-2860753_1280.jpg)
 Image by <a href="https://pixabay.com/users/6689062-6689062/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">David Schwarzenberg</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">Pixabay</a>
 
 _A good data system should at least filfills basic query and charting requiremetns of the team_. It is very common that  __data collectors__ (such as data engineers, people who collect and ingest the data) and __data consumers__ (BI reporter, data analyzer, ML researcher.. ) _are from different teams and they don't understand each others' languages in projects_. This is very normal considering the skill sets required for different roles and the business goals of different teams, but to bring the promised benefits of the whole data system it requires deep engagements from both parties. We saw couple times that technolgies are chose and built based on requirements of one side but that poorly supports the other side's requirements.  
@@ -52,7 +51,7 @@ Both data collecotrs and data consumers are key stakeholder of a data project. I
 ### #3 Balance the workload of each resources  
 
 
-![startwar-balance](https://www.denofgeek.com/wp-content/uploads/2017/04/obi_wan.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/obi_wan.jpg)
 _image credit: [Rob Leane -Den of Geek UK](https://www.denofgeek.com/movies/star-wars-the-last-jedi-and-the-balance-of-the-force/)._
 
 When we were working on small or medium size data project, we implemented the solution using one or two key technologies such as Databricks or Azure Data Explorer. These technologies come with some default capabilities to ingest, manage and query data. We focused on providing properly configuration on these platforms. 
@@ -71,7 +70,7 @@ For large scale project, the righ solution will be the tasks are well distrubute
 
 This is another common issue when we process large amount of data. Data could be duplicated for dozens of reason. It could be the data source sent twice because of network issue; it could be some part of the data processing pipeline partially failed and the system is trying to resume from latest checkpoint; it could be the underneath message service only guarantee at least once...etc. 
 
-![duplication](./img-2020-Data/window-941625_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/window-941625_1280.jpg)
 Image by <a href="https://pixabay.com/users/martinharry-1411929/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Martin Pyško</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Pixabay</a>
 
 We need to evaluate the business impact and the cost we want to pay for mitigating the issue. Common strategies to handle duplicated data are:
@@ -86,7 +85,7 @@ Besides above strategies to handle duplicated data, one other point is to unders
 
 ### #5 Understanding of Core Technologies
 
-![studycoretechnology](./img-2020-Data/book-4126483_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/book-4126483_1280.jpg)
 Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Gerd Altmann</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Pixabay</a>
 
 
