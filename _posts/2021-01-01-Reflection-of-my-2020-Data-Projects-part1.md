@@ -130,7 +130,7 @@ For example, in the core technologies I used in these projects, here are some ke
 
 
 
-___>> Part-II___ 
+___[>> Part-II]((https://herman-wu.github.io/blogs/2021/01/01/Reflection-of-my-2020-Data-Projects-part2.html))___ 
 
 
 

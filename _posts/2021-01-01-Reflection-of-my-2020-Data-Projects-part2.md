@@ -1,7 +1,7 @@
 # Reflections on my 2020 Data Projects  - Part II
 ###  _Lessons I learned and want to keep in mind in 2021+_
 
-___<< Part-I___ 
+___[<< Part-I](https://herman-wu.github.io/blogs/2021/01/01/Reflection-of-my-2020-Data-Projects-part1.html)___ 
 
 ### #6 Every small problem can be BIG
 
