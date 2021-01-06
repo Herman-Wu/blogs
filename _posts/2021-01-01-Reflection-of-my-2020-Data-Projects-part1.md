@@ -1,7 +1,7 @@
-# Reflection of my 2020 Data Projects  (Part I)
+# Reflections on my 2020 Data Projects  - Part I 
 ### - _Lessons I learned and want to keep in mind in 2021+_
 
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)<br>
 Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a>
 
 
@@ -18,8 +18,9 @@ This is a hard fact, but __real world data always evolves  and data schema will 
 
 There are several techniques that can helps to handle data schema changes, such as:
 -  [Bronze, Silver, and Gold architecture](https://docs.microsoft.com/en-us/learn/modules/describe-azure-databricks-delta-lake-architecture/2-describe-bronze-silver-gold-architecture)
+<br>
 ![Bronze, Silver, and Gold](https://databricks.com/wp-content/uploads/2019/08/Delta-Lake-Multi-Hop-Architecture-Bronze.png)
-- [Extract, load, transform](https://en.wikipedia.org/wiki/Extract,_load,_transform#Common_storage_options)
+- [Extract, load, transform](https://en.wikipedia.org/wiki/Extract,_load,_transform#Common_storage_options) <br>
 ![Extract, load, transform](https://blog.panoply.io/hubfs/Blog_images/http%20images%20to%20https/etl-processes-described---x----1000-420x---%20(1).jpg)
 - __Using data format that support dynamic schema__ such as JSON, Parquet , and  __leveraging capablities of NoSQL solutions__ such as MongoDB, COSMOS DB, Elastic Search, Azure Data Explorer, Delta Lake, Big Query, DynamoDB...
 - __Schema versioning__. You can adopt some techiniues like [Temporal Patterns](https://martinfowler.com/eaaDev/timeNarrative.html), [Artifacts are version controlled with application code](https://martinfowler.com/articles/evodb.html#AllDatabaseArtifactsAreVersionControlledWithApplicationCode), [Data Mapper](https://docs.microsoft.com/en-us/archive/msdn-magazine/2009/april/design-patterns-for-data-persistence), [Document Versioning Pattern](https://www.mongodb.com/blog/post/building-with-patterns-the-document-versioning-pattern) to implement data versioning
@@ -29,7 +30,7 @@ _Most of the techniques actually share similar principles and can complement eac
 
 ### #2 _Design for Query & Charting_
 
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/financial-2860753_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/financial-2860753_1280.jpg) <br>
 Image by <a href="https://pixabay.com/users/6689062-6689062/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">David Schwarzenberg</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">Pixabay</a>
 
 _A good data system should at least filfills basic query and charting requiremetns of the team_. It is very common that  __data collectors__ (such as data engineers, people who collect and ingest the data) and __data consumers__ (BI reporter, data analyzer, ML researcher.. ) _are from different teams and they don't understand each others' languages in projects_. This is very normal considering the skill sets required for different roles and the business goals of different teams, but to bring the promised benefits of the whole data system it requires deep engagements from both parties. We saw couple times that technolgies are chose and built based on requirements of one side but that poorly supports the other side's requirements.  
@@ -39,6 +40,7 @@ Normally it is easier to figure out the requirements of data collector than the 
 Here are some common factors to consider: 
 - __Visualization Tools__:  Some teams may have strong Excel skill, they are flunent in using power pivot and functions in Excel to generate in-depth interactive report. Some team like the advanced graphical presentation provided by dashboard/reporting tools such as PowerBI, Tableau. Some teams like the powerful programmability in Jupyter Notebook or Shinny. Also most of data platforms will also provide it's own build-in tool to visualize data. For example, Azure Data Explore provides very handy and power charting capabilities for historical log data and time series data analysis.  
 ![AzureDataExplorer-Chart](https://docs.microsoft.com/en-us/azure/data-explorer/media/time-series-analysis/time-series-operations.png)
+<br>
 _<p align="center">Residual time series chart in Azure Data Explorer</p>_ 
 
 - __Data Post Processing/Query Tools and Languages__: Data consumers will need to further process data to fulfill their analytic requirements. Languages like SQL, R and Python (ok, you can also add Julia) are very common and powerful ones that data analyzers use to further "[__massage data__](https://stackoverflow.com/questions/577892/what-does-data-massage-mean)". But each analysis domain has it's own unique data processing pattern. Based on different design purposes,  _different data platforms also provides their own data query syntax and query engine to support and simplify data post-processing for specific domains_. Understand the strength of each platform and choose the best fit one is critical to project's success. For example, it's easy to implement complex text filtering and parsing in Elastic Search, but it's hard to implement complex data join and aggregation in it. The other example is  Azure Data Explorer, it focus on historical log data analytics and rovides very powrerful [Kusto Query Lanaguage](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/concepts/) to simply log parsing, aggreation, data join and semi-structure data processing. It is one of my favor query languages.  
@@ -51,7 +53,8 @@ Both data collecotrs and data consumers are key stakeholder of a data project. I
 ### #3 Balance the workload of each resources  
 
 
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/obi_wan.jpg)
+![startwar-balance](https://www.denofgeek.com/wp-content/uploads/2017/04/obi_wan.jpg)
+<br>
 _image credit: [Rob Leane -Den of Geek UK](https://www.denofgeek.com/movies/star-wars-the-last-jedi-and-the-balance-of-the-force/)._
 
 When we were working on small or medium size data project, we implemented the solution using one or two key technologies such as Databricks or Azure Data Explorer. These technologies come with some default capabilities to ingest, manage and query data. We focused on providing properly configuration on these platforms. 
@@ -71,6 +74,7 @@ For large scale project, the righ solution will be the tasks are well distrubute
 This is another common issue when we process large amount of data. Data could be duplicated for dozens of reason. It could be the data source sent twice because of network issue; it could be some part of the data processing pipeline partially failed and the system is trying to resume from latest checkpoint; it could be the underneath message service only guarantee at least once...etc. 
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/window-941625_1280.jpg)
+<br>
 Image by <a href="https://pixabay.com/users/martinharry-1411929/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Martin Pyško</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Pixabay</a>
 
 We need to evaluate the business impact and the cost we want to pay for mitigating the issue. Common strategies to handle duplicated data are:
@@ -86,6 +90,7 @@ Besides above strategies to handle duplicated data, one other point is to unders
 ### #5 Understanding of Core Technologies
 
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/book-4126483_1280.jpg)
+<br>
 Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Gerd Altmann</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Pixabay</a>
 
 
