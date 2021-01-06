@@ -1,0 +1,165 @@
+<h1 id="reflection-of-my-2020-data-projects--part-i">Reflection of my 2020 Data Projects  (Part I)</h1>
+<h3 id="--lessons-i-learned-and-want-to-keep-in-mind-in-2021">- <em>Lessons I learned and want to keep in mind in 2021+</em></h3>
+
+<p><img src="./img-2020-Data/new-year-4768119_1280.jpg" alt="img" />
+Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a></p>
+
+<p>2020 have sunsetted, looking back over it, I had 3 projects that needed to process multiple terabyts data regularly (one of them needs to process hundreds of terebytes data every day) and one project that wanted to apply good <a href="https://blogs.nvidia.com/blog/2020/09/03/what-is-mlops/">MLOps</a> practices on GitHub. Some of the projects have went production and are running on datacenters in different continents to serve worldwide customers.</p>
+
+<p>In this blog post I want to <strong>summarize the key practices learned from these  projects</strong> which I want to remember and keep in mind in 2021. I want to read them each time before a new data project kicks off and make a better plan.</p>
+
+<p><em>Note! Even for similar workflow, small/medium/large scale projects actually require different architecture and plan differently. This post focus on large scale data project.</em></p>
+
+<h3 id="1-prepare-for-data-schema-change">#1 <em>Prepare for Data Schema Change</em></h3>
+
+<p>This is a hard fact, but <strong>real world data always evolves  and data schema will change overtime</strong>. Years ago it’s a common practice that we spent a lot of time to negotiate the data schema/contract with data providers and tried to define best schema that can live forever. But we are in a world that data is exponentially growing, more and more data comes from non-traditional OLTP systems. In some projects (especially project that has over several gigabytes data every day) it’s not realistic to assuming we can have stable data format/schema over time and the requests to support varying data schema keeps pop up in system requirements in my 2020 data projects.</p>
+
+<p>There are several techniques that can helps to handle data schema changes, such as:</p>
+<ul>
+  <li><a href="https://docs.microsoft.com/en-us/learn/modules/describe-azure-databricks-delta-lake-architecture/2-describe-bronze-silver-gold-architecture">Bronze, Silver, and Gold architecture</a>
+<img src="https://databricks.com/wp-content/uploads/2019/08/Delta-Lake-Multi-Hop-Architecture-Bronze.png" alt="Bronze, Silver, and Gold" /></li>
+  <li><a href="https://en.wikipedia.org/wiki/Extract,_load,_transform#Common_storage_options">Extract, load, transform</a>
+<img src="https://blog.panoply.io/hubfs/Blog_images/http%20images%20to%20https/etl-processes-described---x----1000-420x---%20(1).jpg" alt="Extract, load, transform" /></li>
+  <li><strong>Using data format that support dynamic schema</strong> such as JSON, Parquet , and  <strong>leveraging capablities of NoSQL solutions</strong> such as MongoDB, COSMOS DB, Elastic Search, Azure Data Explorer, Delta Lake, Big Query, DynamoDB…</li>
+  <li><strong>Schema versioning</strong>. You can adopt some techiniues like <a href="https://martinfowler.com/eaaDev/timeNarrative.html">Temporal Patterns</a>, <a href="https://martinfowler.com/articles/evodb.html#AllDatabaseArtifactsAreVersionControlledWithApplicationCode">Artifacts are version controlled with application code</a>, <a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2009/april/design-patterns-for-data-persistence">Data Mapper</a>, <a href="https://www.mongodb.com/blog/post/building-with-patterns-the-document-versioning-pattern">Document Versioning Pattern</a> to implement data versioning</li>
+</ul>
+
+<p><em>Most of the techniques actually share similar principles and can complement each other in handling data schema change</em>. The key point is paying some extra attention to it. If someone assumes that they will have a stable schema, it’s better to discuss more on this assumption and validate again since it will impact the foundation of whole system design.</p>
+
+<h3 id="2-design-for-query--charting">#2 <em>Design for Query &amp; Charting</em></h3>
+
+<p><img src="./img-2020-Data/financial-2860753_1280.jpg" alt="img" />
+Image by <a href="https://pixabay.com/users/6689062-6689062/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">David Schwarzenberg</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2860753">Pixabay</a></p>
+
+<p><em>A good data system should at least filfills basic query and charting requiremetns of the team</em>. It is very common that  <strong>data collectors</strong> (such as data engineers, people who collect and ingest the data) and <strong>data consumers</strong> (BI reporter, data analyzer, ML researcher.. ) <em>are from different teams and they don’t understand each others’ languages in projects</em>. This is very normal considering the skill sets required for different roles and the business goals of different teams, but to bring the promised benefits of the whole data system it requires deep engagements from both parties. We saw couple times that technolgies are chose and built based on requirements of one side but that poorly supports the other side’s requirements.</p>
+
+<p>Normally it is easier to figure out the requirements of data collector than the requirements of data consumer because data collectors’ requirements are mostly related to the <a href="https://www.zdnet.com/article/volume-velocity-and-variety-understanding-the-three-vs-of-big-data/">3Vs of Big Data</a> - <strong>Volume, Variant and Velocity</strong>.  And they can be quantified with specific numbers in requiremets specification. The data consumers’s requirements are often depends on the business context, problem domain and size, skill set of the data consumers team; it requires some more digging to figure out.</p>
+
+<p>Here are some common factors to consider:</p>
+<ul>
+  <li>
+    <p><strong>Visualization Tools</strong>:  Some teams may have strong Excel skill, they are flunent in using power pivot and functions in Excel to generate in-depth interactive report. Some team like the advanced graphical presentation provided by dashboard/reporting tools such as PowerBI, Tableau. Some teams like the powerful programmability in Jupyter Notebook or Shinny. Also most of data platforms will also provide it’s own build-in tool to visualize data. For example, Azure Data Explore provides very handy and power charting capabilities for historical log data and time series data analysis.<br />
+<img src="https://docs.microsoft.com/en-us/azure/data-explorer/media/time-series-analysis/time-series-operations.png" alt="AzureDataExplorer-Chart" />
+<em>&lt;p align="center"&gt;Residual time series chart in Azure Data Explorer&lt;/p&gt;</em></p>
+  </li>
+  <li>
+    <p><strong>Data Post Processing/Query Tools and Languages</strong>: Data consumers will need to further process data to fulfill their analytic requirements. Languages like SQL, R and Python (ok, you can also add Julia) are very common and powerful ones that data analyzers use to further “<a href="https://stackoverflow.com/questions/577892/what-does-data-massage-mean"><strong>massage data</strong></a>”. But each analysis domain has it’s own unique data processing pattern. Based on different design purposes,  <em>different data platforms also provides their own data query syntax and query engine to support and simplify data post-processing for specific domains</em>. Understand the strength of each platform and choose the best fit one is critical to project’s success. For example, it’s easy to implement complex text filtering and parsing in Elastic Search, but it’s hard to implement complex data join and aggregation in it. The other example is  Azure Data Explorer, it focus on historical log data analytics and rovides very powrerful <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/concepts/">Kusto Query Lanaguage</a> to simply log parsing, aggreation, data join and semi-structure data processing. It is one of my favor query languages.</p>
+  </li>
+  <li>
+    <p><strong>Performance goal and Limitation to retrieve insights from “Big Data”</strong>: Processing large volumes of data is not easy, different solution applies different strategies to achieve their performance goal. They use different index algorithm , in-memory computing, cluster resource allocation, file storage structure, data compression type …etc to archive it’s performance goal. These strageties will also come with some limitations like “limitation of concurrent users”, “unbalance computing resource allocation”, “required huge memory caches”, “data paging support”…etc. Review the pro and con of different solutions and test them in the project’s key data query scenarios.</p>
+  </li>
+</ul>
+
+<p>Both data collecotrs and data consumers are key stakeholder of a data project. In solution design phase, it’s helpful to have deep engagement with both two teams. Spending a little more time on how the data query pattern looks like and consider the data analysis tools that are suitable for users, then you will have a bright outlook for the system.</p>
+
+<h3 id="3-balance-the-workload-of-each-resources">#3 Balance the workload of each resources</h3>
+
+<p><img src="https://www.denofgeek.com/wp-content/uploads/2017/04/obi_wan.jpg" alt="startwar-balance" />
+<em>image credit: <a href="https://www.denofgeek.com/movies/star-wars-the-last-jedi-and-the-balance-of-the-force/">Rob Leane -Den of Geek UK</a>.</em></p>
+
+<p>When we were working on small or medium size data project, we implemented the solution using one or two key technologies such as Databricks or Azure Data Explorer. These technologies come with some default capabilities to ingest, manage and query data. We focused on providing properly configuration on these platforms.</p>
+
+<p>However when we worked on large scale projects, in stead of relying on build-in capabilities,  we found we need to <strong>re-architect the system to further distribute the computation workloads to different components of the system</strong>. We need to spend more time thinking about how to <strong>make the data more “swallowable” for the data platform</strong>. “Swallowable” could  mean things like reduce the data fragmentation, easier to build index, remove dirty data, remove duplicated data… etc.</p>
+
+<p>The workload distribution process is also a process to find the balance of each components. You need to think about:</p>
+<ul>
+  <li>Size of your batch and how it impacts latency and memory consumption</li>
+  <li>choose different data formats, consider it’s impact to data serialize/un-serialize time and disk I/O</li>
+  <li>decide where to filter, split, aggregate data so the next component can reduce workload and also simplify management and configuration complexicty.</li>
+  <li>It also related to the max scale out/in capabilities of each components so all the data input and output velocity of these components are within the bandwidth of it’s connected components.</li>
+</ul>
+
+<p>For large scale project, the righ solution will be the tasks are well distrubuted and the workload is balanced among all key components. So the designed system can have room growth it’s capacity, handle peak time traffic and prepare for future buiness growth.</p>
+
+<h3 id="4-wow-there-are-duplicated-data">#4 Wow, there are duplicated data</h3>
+
+<p>This is another common issue when we process large amount of data. Data could be duplicated for dozens of reason. It could be the data source sent twice because of network issue; it could be some part of the data processing pipeline partially failed and the system is trying to resume from latest checkpoint; it could be the underneath message service only guarantee at least once…etc.</p>
+
+<p><img src="./img-2020-Data/window-941625_1280.jpg" alt="duplication" />
+Image by <a href="https://pixabay.com/users/martinharry-1411929/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Martin Pyško</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=941625">Pixabay</a></p>
+
+<p>We need to evaluate the business impact and the cost we want to pay for mitigating the issue. Common strategies to handle duplicated data are:</p>
+
+<ul>
+  <li><strong>Ingestion Time Check</strong> : We can have ingestion time check by adding data processing log or checkpoint file. Then all the ingestion operation need to verify the log/checkpoint file before process the data.</li>
+  <li><strong>Settling Basin Filter</strong> : In this strategy, the data will be put into an temporary storage/table, and then they will be compared with recently ingested data to make sure the data is not duplicated.</li>
+  <li><strong>Query Time Check</strong> : In some systems, a few duplicated data  can be ignored in most use cases (eg.  website user login log for analyzing user demographic/ geographical distribution), and only few of its use cases required duplicated data check. For such scenario, we can check duplicated data at query time for only required use cases, then we can reduce the system cost  for de-duplicated data check.</li>
+  <li><strong>Under Some Threshold, Ignore It</strong> : It’s best solution if the business context allows it. De-duplication operations usually occupy certain amount of system resources and impact system performance. In large data processing system it’s very costly to implement it. It will helpful if we can just ignore it when it doesn’t impact the business goad.</li>
+</ul>
+
+<p>Besides above strategies to handle duplicated data, one other point is to understand where the duplicated data comes from. Which part of the system or infrastructure services provides at least once and which part can support exactly once. If the system use checkpoint to resume the failed operation, try to understand how it works.</p>
+
+<h3 id="5-understanding-of-core-technologies">#5 Understanding of Core Technologies</h3>
+
+<p><img src="./img-2020-Data/book-4126483_1280.jpg" alt="studycoretechnology" />
+Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Gerd Altmann</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4126483">Pixabay</a></p>
+
+<p>This point should be needless to say, but I add the point here not just because it’s fundamental but also it could take consider mount of time to understand the design philosophy and available configuration parameters of different data platform. Many of the settings could impact each others, we should keep in mind that planning enough time to learn, test and verify best configuration setting is required.</p>
+
+<p>For example, in the core technologies I used in these projects, here are some key configurations that need to check, caculate and test:</p>
+
+<ul>
+  <li><strong>Databricks</strong>
+    <ul>
+      <li>Number of Cores</li>
+      <li>Number of Memory</li>
+      <li>Duration of Job, Stage, Tasks</li>
+      <li>Fair scheduler Pool</li>
+      <li>Structured Steaming : max-files, max-size per trigger</li>
+      <li>Shuffle Partitions</li>
+      <li>Shuffle Spill (memory)</li>
+    </ul>
+  </li>
+  <li><strong>Azure Data Explorer</strong>
+    <ul>
+      <li>Ingestion
+        <ul>
+          <li>MaximumBatchingTimeSpan</li>
+          <li>MaximumNumberOfItems</li>
+          <li>MaximumRawDataSizeMB</li>
+        </ul>
+      </li>
+      <li>Capacity Policy
+        <ul>
+          <li>Ingestion capacity</li>
+          <li>Extents merge capacity</li>
+          <li>Extents purge rebuild capacity</li>
+          <li>Export capacity</li>
+          <li>Extents partition capacity</li>
+          <li>Materialized views capacity policy</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Azure Functions (Python)</strong>
+    <ul>
+      <li>FUNCTIONS_WORKER_PROCESS_COUNT</li>
+      <li>Max instances when Functions scale out</li>
+      <li>Queue Trigger
+        <ul>
+          <li>batchSize</li>
+          <li>newBatchThreshold</li>
+        </ul>
+      </li>
+      <li>HTTP Trigger
+        <ul>
+          <li>maxConcurrentRequests</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong><em>» Part-II</em></strong></p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://databricks.com/session_na20/best-practices-for-building-robust-data-platform-with-apache-spark-and-delta">Best Practices for Building Robust Data Platform with Apache Spark and Delta</a></li>
+  <li><a href="https://medium.com/analytics-vidhya/big-data-management-governance-bce5f72821c1">Analytics Challenges — Big Data Management &amp; Governance</a></li>
+  <li><a href="https://www.sqlshack.com/an-overview-of-etl-and-elt-architecture/">An overview of ETL and ELT architecture</a></li>
+  <li><a href="https://blog.panoply.io/etl-vs-elt-the-difference-is-in-the-how">ETL Vs ELT: The Difference Is In The How</a></li>
+  <li><a href="https://www.youtube.com/watch?v=qHykK5pFRW4">Intro to Chaos Engineering (Video)</a></li>
+  <li><a href="https://martinfowler.com/articles/evodb.html#AllDatabaseArtifactsAreVersionControlledWithApplicationCode">Evolutionary Database Design</a>
+-<a href="https://phoenixnap.com/blog/chaos-engineering">Chaos Engineering: How it Works, Principles, Benefits, &amp; Tools
+</a></li>
+</ul>
