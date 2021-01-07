@@ -1,5 +1,5 @@
 ---
-title: "Reflections on my 2020 Data Projects  - Part I"
+title: "Reflections on my 2020 Data Projects  - Part II"
 layout: post
 summary: "Last year, I participated in projects which process and analyze terabytes of data daily. We managed to have the system went production successfully and it is now processing data from different continents 24x7. Here are some learnings on the journey."
 description: Last year, I participated in projects which process and analyze terabytes of data daily. We managed to have the system went production successfully and it is now processing data from different continents 24x7. Here are some learnings on the journey.
@@ -13,7 +13,7 @@ categories: [Azure Data Explorer, Kusto, Data, Azure, Data Pipeline, Reflections
 
 ####  _Lessons I learned and want to keep in mind in 2021+_
 
-___[<< Part-I](https://herman-wu.github.io/blogs/2021/01/01/Reflection-of-my-2020-Data-Projects-part1.html)___ 
+___[<< Part-I](https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part1.html)___ 
 
 ### #6 Every small problem can be BIG
 
