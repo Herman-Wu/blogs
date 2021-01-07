@@ -1,4 +1,16 @@
-# Reflections on my 2020 Data Projects  - Part II
+---
+title: "Reflections on my 2020 Data Projects  - Part I"
+layout: post
+summary: "Last year, I participated in projects which process and analyze terabytes of data daily. We managed to have the system went production successfully and it is now processing data from different continents 24x7. Here are some learnings on the journey."
+description: Last year, I participated in projects which process and analyze terabytes of data daily. We managed to have the system went production successfully and it is now processing data from different continents 24x7. Here are some learnings on the journey.
+toc: false
+comments: true
+image: {{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg
+hide: false
+search_exclude: false
+categories: [Azure Data Explorer, Kusto, Data, Azure, Data Pipeline, Reflections]
+---
+
 ###  _Lessons I learned and want to keep in mind in 2021+_
 
 ___[<< Part-I](https://herman-wu.github.io/blogs/2021/01/01/Reflection-of-my-2020-Data-Projects-part1.html)___ 
@@ -9,7 +21,7 @@ ___[<< Part-I](https://herman-wu.github.io/blogs/2021/01/01/Reflection-of-my-202
 <br>
 Image by <a href="https://pixabay.com/users/evgenit-4930349/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Evgeni Tcherkasski</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4981010">Pixabay</a>
 
-When we were developing solutions for different projects, we usually started implementing the functional logic that fulfills the design. We used small volumes of data to validate the functionality. Besides these functional development tasks,  there are a few things that deserve our additional attention because they could impact the system's stability when the system is running in full scale and handles production workload during peak time.
+When we were developing solutions for different projects, the dev team usually started by implementing the functional logic that fulfills the design. We used small volumes of data to validate the functionality. During these functional development tasks, there are a few things that deserve our additional attention because they could impact the system’s stability when the system is running in full scale and handles production workload during peak time.
 
 - __Cloud is a live infrastructure__: Cloud is an environment that keeps evolving over time. All cloud vendors are working hard to improve existing services and introduce new capabilities in their platform. It also means the services on the cloud will be upgraded every couple of months. Though cloud vendors/operators will try to prevent service interruptions and sometimes reduce the interruption time to less than one second, it still impacts heavy load systems/components that happen to have hundreds of data processing tasks at the moment. Some design pattern like 
 [Claim-Check Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/claim-check) or [Queue-Based Load Leveling pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling) could help mitigate the impact.  
