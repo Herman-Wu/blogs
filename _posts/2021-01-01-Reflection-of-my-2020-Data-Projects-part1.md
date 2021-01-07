@@ -14,7 +14,7 @@ categories: [Azure Data Explorer, Kusto, Data, Azure, Data Pipeline, Reflections
 ###  _Lessons I learned and want to keep in mind in 2021+_
 
 
-![img](./img-2020-Data/new-year-4768119_1280.jpg)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)
 Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a>
 
 
