@@ -5,18 +5,15 @@ summary: "Last year, I participated in projects which process and analyze teraby
 description: Last year, I participated in projects which process and analyze terabytes of data daily. We managed to have the system went production successfully and it is now processing data from different continents 24x7. Here are some learnings on the journey.
 toc: false
 comments: true
-image: {{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg
+image: https://www.denofgeek.com/wp-content/uploads/2017/04/obi_wan.jpg
 hide: false
 search_exclude: false
 categories: [Azure Data Explorer, Kusto, Data, Azure, Data Pipeline, Reflections]
 ---
 
-
-
-# Reflections on my 2020 Data Projects  - Part I 
 ###  _Lessons I learned and want to keep in mind in 2021+_
 
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-01-01-Reflection-of-my-2020-Data-Projects-part1/new-year-4768119_1280.jpg)<br>
+
 Image by <a href="https://pixabay.com/users/syaibatulhamdi-13452116/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Syaibatul Hamdi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4768119">Pixabay</a>
 
 
