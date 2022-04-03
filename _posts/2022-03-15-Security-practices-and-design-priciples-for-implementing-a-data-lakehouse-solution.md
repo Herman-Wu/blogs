@@ -1,5 +1,5 @@
 ---
-title: "Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution"
+title: "Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse"
 layout: post
 summary: "notes about my security learning and design practices from using Synapse to build a cost-effective data lakehouse solution"
 description: notes about my security learning and design practices from using Synapse to build a cost-effective data lakehouse solution
@@ -11,19 +11,21 @@ search_exclude: false
 categories: [datalakehouse, lakehouse,Synapse, Security, Data, SQL, Serverless SQL, Azure, VNet, Private Endpoint]
 ---
 
-###  _Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution_
+###  _Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse_
 
 #### Background 
 
-<p style="font-size: 0.9rem;font-style: italic;"><img style="display: block;" src="https://live.staticflickr.com/7618/16591080240_f5b5f86100_b.jpg" alt="The Lake House Restaurant and boat ramp in background"><a href="https://www.flickr.com/photos/80223459@N05/16591080240" target="_blank" rel="noopener noreferrer">"The Lake House Restaurant and boat ramp in background"</a><span> by <a href="https://www.flickr.com/photos/80223459@N05" target="_blank" rel="noopener noreferrer">YellowstoneNPS</a></span> is licensed under <a href="https://creativecommons.org/publicdomain/mark/1.0/&atype=html" style="margin-right: 5px;" target="_blank" rel="noopener noreferrer">CC PDM 1.0</a><a href="https://creativecommons.org/publicdomain/mark/1.0/&atype=html" target="_blank" rel="noopener noreferrer" style="display: inline-block;white-space: none;margin-top: 2px;margin-left: 3px;height: 22px !important;"><img style="height: inherit;margin-right: 3px;display: inline-block;" src="https://search.openverse.engineering/static/img/cc_icon.svg?media_id=66a4f356-08b3-415f-8c11-596db0912c6f" /><img style="height: inherit;margin-right: 3px;display: inline-block;" src="https://search.openverse.engineering/static/img/cc-pdm_icon.svg" /></a></p>
+<p style="font-size: 0.9rem;font-style: italic;"><img style="display: block;" src="https://live.staticflickr.com/7618/16591080240_f5b5f86100_b.jpg" alt="The Lake House "><a href="https://www.flickr.com/photos/80223459@N05/16591080240" target="_blank" rel="noopener noreferrer">"The Lake House"</a><span> by <a href="https://www.flickr.com/photos/80223459@N05" target="_blank" rel="noopener noreferrer">YellowstoneNPS</a></span>. Licensed under <a href="https://creativecommons.org/publicdomain/mark/1.0/&atype=html" style="margin-right: 5px;" target="_blank" rel="noopener noreferrer">CC PDM 1.0</a><a href="https://creativecommons.org/publicdomain/mark/1.0/&atype=html" target="_blank" rel="noopener noreferrer" style="display: inline-block;white-space: none;margin-top: 2px;margin-left: 3px;height: 22px !important;"><img style="height: inherit;margin-right: 3px;display: inline-block;" src="https://search.openverse.engineering/static/img/cc_icon.svg?media_id=66a4f356-08b3-415f-8c11-596db0912c6f" /><img style="height: inherit;margin-right: 3px;display: inline-block;" src="https://search.openverse.engineering/static/img/cc-pdm_icon.svg" /></a></p>
 
-Synapse is a versatile data platform that supports enterprise data warehousing,  realtime data analytics, data pipeline,  time-serious data processing, Machine Learning and data governance. It integrates several different technologies (e.g., SQL DW, Serverless SQL, Spark, Data Pipeline, Data Explorer, Synapse ML...) to support these various capabilities. However, this also inevitably increases the complexity of  the system infrastructure. 
+Synapse is a versatile data platform that supports enterprise data warehousing,  realtime data analytics, data pipeline,  time-serious data processing, machine learning and data governance. It integrates several different technologies (e.g., SQL DW, Serverless SQL, Spark, Data Pipeline, Data Explorer, Synapse ML, Purview...) to support these various capabilities. However, this also inevitably increases the complexity of  the system infrastructure. 
 
-![](/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synaspe-solution-overview.png)
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synaspe-solution-overview.png)
+![](/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synaspe-solution-overview.png)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synaspe-solution-overview.png)
 
 
-In this blog I would like to share the security learning after implemented a [data lakehouse](https://databricks.com/glossary/data-lakehouse) project for a international manufacture company using Synapse. [Data Lakehouse](https://databricks.com/glossary/data-lakehouse)  is a modern data management architecture that combines  data lakes's  cost-efficiency, scale, and flexibility features with data warehouses's data and transaction management capabilities. It well supports business intelligence and machine learning (ML) scenario.  We will focus on  the security design and implementation pratices in the project. In the project we chose [Synapse serverless SQL](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/on-demand-workspace-overview)  and [Synpase Spark](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview) to implemente the [data lakehouse pattern](https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse). Some common use cases for the solution are IoT telemetry  analysis, commsumer activities and behaveior tracking, security log monitoring, or semi-structured data processing. 
+In this blog I would like to share the security learning after implemented a [data lakehouse](https://databricks.com/glossary/data-lakehouse) project for a international manufacture company using Synapse. [Data Lakehouse](https://databricks.com/glossary/data-lakehouse)  is a modern data management architecture that combines  data lakes's  cost-efficiency, scale, and flexibility features with data warehouses's data and transaction management capabilities. It well supports business intelligence and machine learning (ML) scenario for large amount of diverse data structure and data source.Some common use cases for the solution are IoT telemetry  analysis, commsumer activities and behaveior tracking, security log monitoring, or semi-structured data processing.   
+
+We will focus on  the security design and implementation pratices used in the project. In the project we chose [Synapse serverless SQL](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/on-demand-workspace-overview)  and [Synpase Spark](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview) to implemente the [data lakehouse pattern](https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse). Following is the high level solution design architecture.
 
 ![img](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/329206iAD1B6F56B8C16E88/image-size/large?v=v2&px=999)
 <figcaption align = "center">Fig.1   High level concept of the solution  <br> 
@@ -56,7 +58,7 @@ Considering Synapse is a composition of [several different technologies](https:/
 
 - <u>Chose the proper security solution that can enforce the defined communication behaviors</u>.
 
-    In Azure, several security technologies are capable of enforcing the defined service communication behaviors. For example, in Azure Data Lake storage, you can use a white-list IP address to control its access, but you can also choose allowed VNet, Azure services, or resource instances. Each protection method provides a different security protection and needs to be selected based on the business needs and environment limitation. I will decribe the configuration we used in our project in following section.   
+    In Azure, several security technologies are capable of enforcing the defined service communication behaviors. For example, in Azure Data Lake storage, you can use a white-list IP address to control its access, but you can also choose allowed VNet, Azure services, or resource instances. Each protection method provides a different security protection and needs to be selected based on the business needs and environment limitation. I will decribe the configuration we used in our project in the next section.   
     
  - <u>Add threat detection and advanced defense for critical resources</u>.   
 
@@ -80,9 +82,9 @@ Azure Pipeline Agent| KeyVault | Allow (Instance)  |* Firewall Rule - Selected V
 Azure Functions| Synapse Serverless SQL| Allow (Instance) | VNet - Private EndPoint (Synapse Serverless SQL) 
 Synaspe Pipeline/Spark|Azure Monitor |Allow (Instance) |VNet - Private EndPoint (Azure Monitor) 
 
-The following diagram shows the architecture with the network and asset protection design.  
-![](/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/security-architecture01.png)
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/security-architecture01.png)
+The bellow diagram shows the architecture with the network and asset protection design.  
+![](/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/security-architecture01.png)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/security-architecture01.png)
 
 
 
@@ -110,8 +112,8 @@ For better Network and Asset protection, the following are additional security d
 
 There are several parts in the system, each part requires different Identity and Access Management (IAM) configuration. They will need to collaborate tightly with each other to provide a streamlined user experience. Therefore, when we implement authentication and authorization control, we need to plan the following parts.
 
-![](/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synapse-access-control.png)
-![img]({{ site.url }}{{ site.baseurl }}/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synapse-access-control.png)
+![](/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synapse-access-control.png)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synapse-access-control.png)
 ![](img/synapse-access-control.png)
 
 - <u>Chose Identity type in different Access Control Layers</u>
@@ -148,7 +150,9 @@ There are several parts in the system, each part requires different Identity and
 
     Default Azure DevOp pipeline agent couldn't support VNet communication because it used a very wide IP range. Therefore, we implemented Azure DevOps [self-hosted agent](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops) in VNet so the DevOps process can be protected and smoothly communicate with the whole Hitachi Data Emporium system. In addition, [VM scale sets](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview) are used to ensure the DevOps engine can scale up and down.  
 
-
+![](/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png)
+![img]({{ site.url }}{{ site.baseurl }}/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png)
+![](img/synapse-access-control.png)
 ![](img/devop-security-archi.png)
 
 - <u>Implement infrastructure security scanning & security smoke testing in CI/CD pipeline</u>
@@ -185,62 +189,15 @@ With the combination of Synapse Serverless SQL and Synpase Spark, we built a fle
 
 <br>
 <br>
-#### Reference
+##### Reference
 - [Current Data Patterns Blog Series: Data Lakehouse](https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse)
 - [The Data Lakehouse, the Data Warehouse and a Modern Data platform architecture](https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-data-lakehouse-the-data-warehouse-and-a-modern-data-platform/ba-p/2792337?msclkid=c7eddbcbb24411ecae0f0ec795c2ad28)
-
-###                  ~ The End ~
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-#### Leverage [BRIE Tool](https://sda-rc-appservice-rc.azurewebsites.net/)
-
-
-
-
-BRI is a web application provided by CSE security solution area. It is designed to help facilitate better security practices during customer engagements by providing an easy-to-use checklist that can populate new items in the engagement's engineering backlog.
-
-A lot of BRIE sessions can be helpful to the project.   Following are a few  security practices examples in BRIE that is suggested to check.
-
-- Monitor Sensitive Data
-
-    Monitoring and managing access to sensitive information in the cloud is an essential part of cybersecurity policy in any organization
-    - Continuously monitor for unauthorized transfer of data to locations outside of enterprise visibility and control.
-    - Alert on anomalous transfer of information that might indicate unauthorized transfers of sensitive information.
-
-- Keys and Secret Management
-
-    - Separate application secrets by environment
-    - Rotate secrets regularly
-    - Access to secrets should be segregated by at least application, if not role
-- Restrict Access to Sensitive Data
-    - Protect sensitive data by restricting access using role-based access control (RBAC), network-based access controls.
-    - Implement Privileged Access Management for the most sensitive data.
-
-
-
-##### Reference
 - [The best practices for organizing Synapse workspaces and lakehouse](https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-best-practices-for-organizing-synapse-workspaces-and/ba-p/3002506)
-
 - [Secure score in Microsoft Defender for Cloud](https://docs.microsoft.com/en-us/azure/defender-for-cloud/secure-score-security-controls#:~:text=Defender%20for%20Cloud%20continually%20assesses,lower%20the%20identified%20risk%20level.)
-
-- [Wiki-Security Components for Synapse](https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Engagement%20Wiki/13536/Security-Components-for-Synapse)
-
 - [Understanding Azure Synapse Private Endpoints](https://www.thedataguy.blog/azure-synapse-understanding-private-endpoints/)
-
-
 - [Azure Synapse Analytics – New Insights Into Data Security](https://dzone.com/articles/azure-synapse-analytics-new-insights-into-data-sec)
-
 - [Azure security baseline for Azure Synapse dedicated SQL pool (formerly SQL DW)](https://docs.microsoft.com/en-us/security/benchmark/azure/baselines/synapse-analytics-security-baseline)
-
 - [Cloud Network Security 101: Azure Service Endpoints vs. Private Endpoints](https://www.fugue.co/blog/cloud-network-security-101-azure-service-endpoints-vs.-private-endpoints)
-
 - [How to set up access control for your Synapse workspace](https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-set-up-access-control)
-
 - [Connect to Azure Synapse Studio using Azure Private Link Hubs](https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-private-link-hubs)
-
-- [Wiki-ESA and Hitachi IDE Comparison](https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Sharing%20Wiki/14801/ESA-and-Hitachi-IDE-Comparison)
 
