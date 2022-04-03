@@ -1,15 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2022-04-03T01:05:17-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution</title><link href="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2021/03/15/Security-Learning-in-a-Synapse-Serverless-SQL-Project.html" rel="alternate" type="text/html" title="Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution" /><published>2021-03-15T00:00:00-05:00</published><updated>2021-03-15T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2021/03/15/Security-Learning-in-a-Synapse-Serverless-SQL-Project</id><content type="html" xml:base="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2021/03/15/Security-Learning-in-a-Synapse-Serverless-SQL-Project.html">&lt;h3 id=&quot;security-practices-and-design-priciples-for-using-azure-syanpse-to-implementing-a-data-lakehouse-solution&quot;&gt;&lt;em&gt;Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution&lt;/em&gt;&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2022-04-03T03:33:53-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse</title><link href="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html" rel="alternate" type="text/html" title="Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse" /><published>2022-03-15T00:00:00-05:00</published><updated>2022-03-15T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution</id><content type="html" xml:base="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html">&lt;h3 id=&quot;security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution-in-azure-synapse&quot;&gt;&lt;em&gt;Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse&lt;/em&gt;&lt;/h3&gt;
 
 &lt;h4 id=&quot;background&quot;&gt;Background&lt;/h4&gt;
 
-&lt;p style=&quot;font-size: 0.9rem;font-style: italic;&quot;&gt;&lt;img style=&quot;display: block;&quot; src=&quot;https://live.staticflickr.com/7618/16591080240_f5b5f86100_b.jpg&quot; alt=&quot;The Lake House Restaurant and boat ramp in background&quot; /&gt;&lt;a href=&quot;https://www.flickr.com/photos/80223459@N05/16591080240&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;&quot;The Lake House Restaurant and boat ramp in background&quot;&lt;/a&gt;&lt;span&gt; by &lt;a href=&quot;https://www.flickr.com/photos/80223459@N05&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;YellowstoneNPS&lt;/a&gt;&lt;/span&gt; is licensed under &lt;a href=&quot;https://creativecommons.org/publicdomain/mark/1.0/&amp;amp;atype=html&quot; style=&quot;margin-right: 5px;&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;CC PDM 1.0&lt;/a&gt;&lt;a href=&quot;https://creativecommons.org/publicdomain/mark/1.0/&amp;amp;atype=html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; style=&quot;display: inline-block;white-space: none;margin-top: 2px;margin-left: 3px;height: 22px !important;&quot;&gt;&lt;img style=&quot;height: inherit;margin-right: 3px;display: inline-block;&quot; src=&quot;https://search.openverse.engineering/static/img/cc_icon.svg?media_id=66a4f356-08b3-415f-8c11-596db0912c6f&quot; /&gt;&lt;img style=&quot;height: inherit;margin-right: 3px;display: inline-block;&quot; src=&quot;https://search.openverse.engineering/static/img/cc-pdm_icon.svg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;font-size: 0.9rem;font-style: italic;&quot;&gt;&lt;img style=&quot;display: block;&quot; src=&quot;https://live.staticflickr.com/7618/16591080240_f5b5f86100_b.jpg&quot; alt=&quot;The Lake House &quot; /&gt;&lt;a href=&quot;https://www.flickr.com/photos/80223459@N05/16591080240&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;&quot;The Lake House&quot;&lt;/a&gt;&lt;span&gt; by &lt;a href=&quot;https://www.flickr.com/photos/80223459@N05&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;YellowstoneNPS&lt;/a&gt;&lt;/span&gt;. Licensed under &lt;a href=&quot;https://creativecommons.org/publicdomain/mark/1.0/&amp;amp;atype=html&quot; style=&quot;margin-right: 5px;&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;CC PDM 1.0&lt;/a&gt;&lt;a href=&quot;https://creativecommons.org/publicdomain/mark/1.0/&amp;amp;atype=html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; style=&quot;display: inline-block;white-space: none;margin-top: 2px;margin-left: 3px;height: 22px !important;&quot;&gt;&lt;img style=&quot;height: inherit;margin-right: 3px;display: inline-block;&quot; src=&quot;https://search.openverse.engineering/static/img/cc_icon.svg?media_id=66a4f356-08b3-415f-8c11-596db0912c6f&quot; /&gt;&lt;img style=&quot;height: inherit;margin-right: 3px;display: inline-block;&quot; src=&quot;https://search.openverse.engineering/static/img/cc-pdm_icon.svg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Synapse is a versatile data platform that supports enterprise data warehousing,  realtime data analytics, data pipeline,  time-serious data processing, Machine Learning and data governance. It integrates several different technologies (e.g., SQL DW, Serverless SQL, Spark, Data Pipeline, Data Explorer, Synapse ML…) to support these various capabilities. However, this also inevitably increases the complexity of  the system infrastructure.&lt;/p&gt;
+&lt;p&gt;Synapse is a versatile data platform that supports enterprise data warehousing,  realtime data analytics, data pipeline,  time-serious data processing, machine learning and data governance. It integrates several different technologies (e.g., SQL DW, Serverless SQL, Spark, Data Pipeline, Data Explorer, Synapse ML, Purview…) to support these various capabilities. However, this also inevitably increases the complexity of  the system infrastructure.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synaspe-solution-overview.png&quot; alt=&quot;&quot; /&gt;
-&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synaspe-solution-overview.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synaspe-solution-overview.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synaspe-solution-overview.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;In this blog I would like to share the security learning after implemented a &lt;a href=&quot;https://databricks.com/glossary/data-lakehouse&quot;&gt;data lakehouse&lt;/a&gt; project for a international manufacture company using Synapse. &lt;a href=&quot;https://databricks.com/glossary/data-lakehouse&quot;&gt;Data Lakehouse&lt;/a&gt;  is a modern data management architecture that combines  data lakes’s  cost-efficiency, scale, and flexibility features with data warehouses’s data and transaction management capabilities. It well supports business intelligence and machine learning (ML) scenario.  We will focus on  the security design and implementation pratices in the project. In the project we chose &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/on-demand-workspace-overview&quot;&gt;Synapse serverless SQL&lt;/a&gt;  and &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview&quot;&gt;Synpase Spark&lt;/a&gt; to implemente the &lt;a href=&quot;https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse&quot;&gt;data lakehouse pattern&lt;/a&gt;. Some common use cases for the solution are IoT telemetry  analysis, commsumer activities and behaveior tracking, security log monitoring, or semi-structured data processing.&lt;/p&gt;
+&lt;p&gt;In this blog I would like to share the security learning after implemented a &lt;a href=&quot;https://databricks.com/glossary/data-lakehouse&quot;&gt;data lakehouse&lt;/a&gt; project for a international manufacture company using Synapse. &lt;a href=&quot;https://databricks.com/glossary/data-lakehouse&quot;&gt;Data Lakehouse&lt;/a&gt;  is a modern data management architecture that combines  data lakes’s  cost-efficiency, scale, and flexibility features with data warehouses’s data and transaction management capabilities. It well supports business intelligence and machine learning (ML) scenario for large amount of diverse data structure and data source.Some common use cases for the solution are IoT telemetry  analysis, commsumer activities and behaveior tracking, security log monitoring, or semi-structured data processing.&lt;/p&gt;
+
+&lt;p&gt;We will focus on  the security design and implementation pratices used in the project. In the project we chose &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/on-demand-workspace-overview&quot;&gt;Synapse serverless SQL&lt;/a&gt;  and &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-overview&quot;&gt;Synpase Spark&lt;/a&gt; to implemente the &lt;a href=&quot;https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse&quot;&gt;data lakehouse pattern&lt;/a&gt;. Following is the high level solution design architecture.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://techcommunity.microsoft.com/t5/image/serverpage/image-id/329206iAD1B6F56B8C16E88/image-size/large?v=v2&amp;amp;px=999&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 &lt;figcaption align=&quot;center&quot;&gt;Fig.1   High level concept of the solution  &lt;br /&gt; 
@@ -44,7 +46,7 @@ Source: &lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-an
   &lt;li&gt;
     &lt;p&gt;&lt;u&gt;Chose the proper security solution that can enforce the defined communication behaviors&lt;/u&gt;.&lt;/p&gt;
 
-    &lt;p&gt;In Azure, several security technologies are capable of enforcing the defined service communication behaviors. For example, in Azure Data Lake storage, you can use a white-list IP address to control its access, but you can also choose allowed VNet, Azure services, or resource instances. Each protection method provides a different security protection and needs to be selected based on the business needs and environment limitation. I will decribe the configuration we used in our project in following section.&lt;/p&gt;
+    &lt;p&gt;In Azure, several security technologies are capable of enforcing the defined service communication behaviors. For example, in Azure Data Lake storage, you can use a white-list IP address to control its access, but you can also choose allowed VNet, Azure services, or resource instances. Each protection method provides a different security protection and needs to be selected based on the business needs and environment limitation. I will decribe the configuration we used in our project in the next section.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;&lt;u&gt;Add threat detection and advanced defense for critical resources&lt;/u&gt;.&lt;/p&gt;
@@ -160,9 +162,9 @@ Source: &lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-an
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;The following diagram shows the architecture with the network and asset protection design.&lt;br /&gt;
-&lt;img src=&quot;/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/security-architecture01.png&quot; alt=&quot;&quot; /&gt;
-&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/security-architecture01.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The bellow diagram shows the architecture with the network and asset protection design.&lt;br /&gt;
+&lt;img src=&quot;/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/security-architecture01.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/security-architecture01.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For example, the above diagram includes:&lt;/p&gt;
 &lt;ul&gt;
@@ -196,8 +198,8 @@ Source: &lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-an
 
 &lt;p&gt;There are several parts in the system, each part requires different Identity and Access Management (IAM) configuration. They will need to collaborate tightly with each other to provide a streamlined user experience. Therefore, when we implement authentication and authorization control, we need to plan the following parts.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synapse-access-control.png&quot; alt=&quot;&quot; /&gt;
-&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2021-03-15-Security-Learning-in-a-Synapse-Serverless-SQL-Project/synapse-access-control.png&quot; alt=&quot;img&quot; /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synapse-access-control.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/synapse-access-control.png&quot; alt=&quot;img&quot; /&gt;
 &lt;img src=&quot;img/synapse-access-control.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
@@ -250,7 +252,10 @@ Source: &lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-an
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/devop-security-archi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://Herman-Wu.github.io/blogs/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png&quot; alt=&quot;img&quot; /&gt;
+&lt;img src=&quot;img/synapse-access-control.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;img/devop-security-archi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -288,86 +293,19 @@ Source: &lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-an
 
 &lt;p&gt;&lt;br /&gt;
 &lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;reference&quot;&gt;Reference&lt;/h4&gt;
+&lt;h5 id=&quot;reference&quot;&gt;Reference&lt;/h5&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://blog.starburst.io/part-2-of-current-data-patterns-blog-series-data-lakehouse&quot;&gt;Current Data Patterns Blog Series: Data Lakehouse&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-data-lakehouse-the-data-warehouse-and-a-modern-data-platform/ba-p/2792337?msclkid=c7eddbcbb24411ecae0f0ec795c2ad28&quot;&gt;The Data Lakehouse, the Data Warehouse and a Modern Data platform architecture&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;-the-end-&quot;&gt;~ The End ~&lt;/h3&gt;
-&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;leverage-brie-tool&quot;&gt;Leverage &lt;a href=&quot;https://sda-rc-appservice-rc.azurewebsites.net/&quot;&gt;BRIE Tool&lt;/a&gt;&lt;/h4&gt;
-
-&lt;p&gt;BRI is a web application provided by CSE security solution area. It is designed to help facilitate better security practices during customer engagements by providing an easy-to-use checklist that can populate new items in the engagement’s engineering backlog.&lt;/p&gt;
-
-&lt;p&gt;A lot of BRIE sessions can be helpful to the project.   Following are a few  security practices examples in BRIE that is suggested to check.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Monitor Sensitive Data&lt;/p&gt;
-
-    &lt;p&gt;Monitoring and managing access to sensitive information in the cloud is an essential part of cybersecurity policy in any organization&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Continuously monitor for unauthorized transfer of data to locations outside of enterprise visibility and control.&lt;/li&gt;
-      &lt;li&gt;Alert on anomalous transfer of information that might indicate unauthorized transfers of sensitive information.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Keys and Secret Management&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;Separate application secrets by environment&lt;/li&gt;
-      &lt;li&gt;Rotate secrets regularly&lt;/li&gt;
-      &lt;li&gt;Access to secrets should be segregated by at least application, if not role&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Restrict Access to Sensitive Data&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Protect sensitive data by restricting access using role-based access control (RBAC), network-based access controls.&lt;/li&gt;
-      &lt;li&gt;Implement Privileged Access Management for the most sensitive data.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;reference-1&quot;&gt;Reference&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-best-practices-for-organizing-synapse-workspaces-and/ba-p/3002506&quot;&gt;The best practices for organizing Synapse workspaces and lakehouse&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/defender-for-cloud/secure-score-security-controls#:~:text=Defender%20for%20Cloud%20continually%20assesses,lower%20the%20identified%20risk%20level.&quot;&gt;Secure score in Microsoft Defender for Cloud&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Engagement%20Wiki/13536/Security-Components-for-Synapse&quot;&gt;Wiki-Security Components for Synapse&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.thedataguy.blog/azure-synapse-understanding-private-endpoints/&quot;&gt;Understanding Azure Synapse Private Endpoints&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://dzone.com/articles/azure-synapse-analytics-new-insights-into-data-sec&quot;&gt;Azure Synapse Analytics – New Insights Into Data Security&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/security/benchmark/azure/baselines/synapse-analytics-security-baseline&quot;&gt;Azure security baseline for Azure Synapse dedicated SQL pool (formerly SQL DW)&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.fugue.co/blog/cloud-network-security-101-azure-service-endpoints-vs.-private-endpoints&quot;&gt;Cloud Network Security 101: Azure Service Endpoints vs. Private Endpoints&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-set-up-access-control&quot;&gt;How to set up access control for your Synapse workspace&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-private-link-hubs&quot;&gt;Connect to Azure Synapse Studio using Azure Private Link Hubs&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Sharing%20Wiki/14801/ESA-and-Hitachi-IDE-Comparison&quot;&gt;Wiki-ESA and Hitachi IDE Comparison&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">Security practices and design priciples for using Azure Syanpse to implementing a data lakehouse solution</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" /><media:content medium="image" url="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Reflections on my 2020 Data Projects - Part II</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2.html" rel="alternate" type="text/html" title="Reflections on my 2020 Data Projects  - Part II" /><published>2021-01-01T00:00:00-06:00</published><updated>2021-01-01T00:00:00-06:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2.html">&lt;h4 id=&quot;lessons-i-learned-and-want-to-keep-in-mind-in-2021&quot;&gt;&lt;em&gt;Lessons I learned and want to keep in mind in 2021+&lt;/em&gt;&lt;/h4&gt;
+  &lt;li&gt;&lt;a href=&quot;https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-best-practices-for-organizing-synapse-workspaces-and/ba-p/3002506&quot;&gt;The best practices for organizing Synapse workspaces and lakehouse&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/defender-for-cloud/secure-score-security-controls#:~:text=Defender%20for%20Cloud%20continually%20assesses,lower%20the%20identified%20risk%20level.&quot;&gt;Secure score in Microsoft Defender for Cloud&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.thedataguy.blog/azure-synapse-understanding-private-endpoints/&quot;&gt;Understanding Azure Synapse Private Endpoints&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dzone.com/articles/azure-synapse-analytics-new-insights-into-data-sec&quot;&gt;Azure Synapse Analytics – New Insights Into Data Security&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/security/benchmark/azure/baselines/synapse-analytics-security-baseline&quot;&gt;Azure security baseline for Azure Synapse dedicated SQL pool (formerly SQL DW)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.fugue.co/blog/cloud-network-security-101-azure-service-endpoints-vs.-private-endpoints&quot;&gt;Cloud Network Security 101: Azure Service Endpoints vs. Private Endpoints&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-set-up-access-control&quot;&gt;How to set up access control for your Synapse workspace&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-private-link-hubs&quot;&gt;Connect to Azure Synapse Studio using Azure Private Link Hubs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Security practices and design priciples for implementing a data lakehouse solution in Azure Synapse</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" /><media:content medium="image" url="https://azurecomcdn.azureedge.net/cvt-ee71595d3667788def73479da1629d673313a0b081e460fc596839b82f34a2df/images/page/services/machine-learning/mlops/steps/mlops-slide1-step3.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Reflections on my 2020 Data Projects - Part II</title><link href="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2.html" rel="alternate" type="text/html" title="Reflections on my 2020 Data Projects  - Part II" /><published>2021-01-01T00:00:00-06:00</published><updated>2021-01-01T00:00:00-06:00</updated><id>https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2</id><content type="html" xml:base="https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part2.html">&lt;h4 id=&quot;lessons-i-learned-and-want-to-keep-in-mind-in-2021&quot;&gt;&lt;em&gt;Lessons I learned and want to keep in mind in 2021+&lt;/em&gt;&lt;/h4&gt;
 
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;&lt;a href=&quot;https://herman-wu.github.io/blogs/azure%20data%20explorer/kusto/data/azure/data%20pipeline/reflections/2021/01/01/Reflection-of-my-2020-Data-Projects-part1.html&quot;&gt;« Part-I&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 
