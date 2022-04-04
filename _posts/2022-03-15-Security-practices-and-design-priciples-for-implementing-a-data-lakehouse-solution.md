@@ -43,7 +43,7 @@ We started the security design by using the [Threat Modeling tool](https://www.m
 
 One of the key security assurances principles in the Cloud Adoption Framework is the [Zero Trust principle](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#guiding-principles). When designing security for any component or system, we should reduce the risk of attackers expanding access by assuming other resources in the organization are compromised. 
 
-Based on the threat modeling discussion result, we follow the [micro-segmentation deployment](https://docs.microsoft.com/en-us/security/zero-trust/deploy/networks#i-network-segmentation-many-ingressegress-cloud-micro-perimeters-with-some-micro-segmentation) recommendation in zero-trust and defined [several security boundaries](https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Engagement%20Wiki/13424/008-Trusted-Boundary-Planning-and-VNet-Design). VNet and [Synapse data exfiltration protection](https://docs.microsoft.com/en-us/azure/synapse-analytics/security/workspace-data-exfiltration-protection#:~:text=Azure%20Synapse%20Analytics%20workspaces%20support%20enabling%20data%20exfiltration,data%20to%20locations%20outside%20of%20your%20organization%E2%80%99s%20scope.) are the key technologies used to implement the security boundary and protect the system's data assets and critical components.
+Based on the threat modeling discussion result, we follow the [micro-segmentation deployment](https://docs.microsoft.com/en-us/security/zero-trust/deploy/networks#i-network-segmentation-many-ingressegress-cloud-micro-perimeters-with-some-micro-segmentation) recommendation in zero-trust and defined several [security boundaries](https://insights.sei.cmu.edu/blog/cybersecurity-architecture-part-2-system-boundary-and-boundary-protection/). VNet and [Synapse data exfiltration protection](https://docs.microsoft.com/en-us/azure/synapse-analytics/security/workspace-data-exfiltration-protection#:~:text=Azure%20Synapse%20Analytics%20workspaces%20support%20enabling%20data%20exfiltration,data%20to%20locations%20outside%20of%20your%20organization%E2%80%99s%20scope.) are the key technologies used to implement the security boundary and protect the system's data assets and critical components.
 
 Considering Synapse is a composition of [several different technologies](https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is), we need to :
 - <u>Identify essential  components of Synapse and related services used in the project</u>. 
@@ -118,7 +118,7 @@ There are several parts in the system, each part requires different Identity and
 
 - <u>Chose Identity type in different Access Control Layers</u>
 
-    There are four different identity types in the system.
+    There are four different identity solutions in the system.
     - SQL Account (SQL Server)
     - Service Principal (Azure AD)
     - Managed Identity (Azure AD)
@@ -134,7 +134,7 @@ There are several parts in the system, each part requires different Identity and
 
 - <u>Consider Least-privileged access</u>
 
-    In Zero trust guiding principles, it suggests providing just-in-time and just-enough-access to critical resources. After discussing with Security SA, we suggested Hitachi Vantara implement Azure [AD Privileged Identity Management (PIM)](https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure) and enhance security deployment check in the future. 
+    In Zero trust guiding principles, it suggests providing just-in-time and just-enough-access to critical resources. Azure [AD Privileged Identity Management (PIM)](https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure) and enhance security deployment check in the future. 
 
 - <u>Protect Linked Service</u>
 
@@ -148,7 +148,7 @@ There are several parts in the system, each part requires different Identity and
 
 - <u>Use VNet enabled self-hosted pipeline agent</u>
 
-    Default Azure DevOp pipeline agent couldn't support VNet communication because it used a very wide IP range. Therefore, we implemented Azure DevOps [self-hosted agent](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops) in VNet so the DevOps process can be protected and smoothly communicate with the whole Hitachi Data Emporium system. In addition, [VM scale sets](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview) are used to ensure the DevOps engine can scale up and down.  
+    Default Azure DevOp pipeline agent couldn't support VNet communication because it used a very wide IP range. Therefore, we implemented Azure DevOps [self-hosted agent](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops) in VNet so the DevOps process can be protected and smoothly communicate with the whole system. In addition, [VM scale sets](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview) are used to ensure the DevOps engine can scale up and down.  
 
 ![](/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png)
 ![img]({{ site.url }}{{ site.baseurl }}/assets/img/2022-03-15-Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution/devop-security-archi.png)
@@ -182,9 +182,9 @@ You can enable Defender for Cloud's free plan  on all your current Azure subscri
 
  And if you need advanced security management and threat detection capabilities, which provide fetures such as suspicious activities detection and alerting. You can enable  Cloud workload protection indivually for different resources. So you have the option to choose the most cost effective way to protect the system. 
 
- #### Summary 
+#### Summary 
 
-With the combination of Synapse Serverless SQL and Synpase Spark, we built a flexible,  scalable and cost-effective data lakehouse solution in the project. In this article, I tired to summarized the security design principle and practices we implemented in the solution. We start from the [Threat Modeling tool](https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling) and guidance in the  [Cloud Adoption Framework (CAF)'s security disciplines](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#security-disciplines). To harden the security protection, the project team decided to focus on Network and Asset protection, Identity and Access control, and DevOps security. We also evaluated the security score of the system and review the security suggestions provided by Microsoft Defender for cloud. Hope this learning will also helps you to  implementing a secure data lakehouse solution on Azure Synapse.
+With the combination of Synapse Serverless SQL and Synpase Spark, we built a flexible,  scalable and cost-effective data lakehouse solution in the project. In this article, I tired to summarized the security design principle and practices we implemented in the solution. We start from the [Threat Modeling tool](https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling) and guidance in the  [Cloud Adoption Framework (CAF)'s security disciplines](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#security-disciplines). To harden the security protection, the project team decided to focus on Network and Asset protection, Identity and Access control, and DevOps security. We also evaluated the security score of the system and review the security suggestions provided by Microsoft Defender for cloud. There are several different configurations you need to choose when you want to protect the network. In article it also describes the design after we compared different options. Identity and Access control is very important for securing the data asset in the system. Especially for the data lakehouse solution, you need to mapping different access control layers and choose right identity solution for it.  Hope this learning will also helps you to  implementing a secure data lakehouse solution on Azure Synapse.
 
 
 <br>
