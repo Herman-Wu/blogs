@@ -165,7 +165,7 @@ Source: <a href="https://techcommunity.microsoft.com/t5/azure-synapse-analytics-
 
 <p>One of the key security assurances principles in the Cloud Adoption Framework is the <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#guiding-principles">Zero Trust principle</a>. When designing security for any component or system, we should reduce the risk of attackers expanding access by assuming other resources in the organization are compromised.</p>
 
-<p>Based on the threat modeling discussion result, we follow the <a href="https://docs.microsoft.com/en-us/security/zero-trust/deploy/networks#i-network-segmentation-many-ingressegress-cloud-micro-perimeters-with-some-micro-segmentation">micro-segmentation deployment</a> recommendation in zero-trust and defined <a href="https://dev.azure.com/CSECodeHub/412717%20-%20Hitachi%20Vantara%20Lumada%20Manufacturing%20Insights%20Solution/_wiki/wikis/Engagement%20Wiki/13424/008-Trusted-Boundary-Planning-and-VNet-Design">several security boundaries</a>. VNet and <a href="https://docs.microsoft.com/en-us/azure/synapse-analytics/security/workspace-data-exfiltration-protection#:~:text=Azure%20Synapse%20Analytics%20workspaces%20support%20enabling%20data%20exfiltration,data%20to%20locations%20outside%20of%20your%20organization%E2%80%99s%20scope.">Synapse data exfiltration protection</a> are the key technologies used to implement the security boundary and protect the system’s data assets and critical components.</p>
+<p>Based on the threat modeling discussion result, we follow the <a href="https://docs.microsoft.com/en-us/security/zero-trust/deploy/networks#i-network-segmentation-many-ingressegress-cloud-micro-perimeters-with-some-micro-segmentation">micro-segmentation deployment</a> recommendation in zero-trust and defined several <a href="https://insights.sei.cmu.edu/blog/cybersecurity-architecture-part-2-system-boundary-and-boundary-protection/">security boundaries</a>. VNet and <a href="https://docs.microsoft.com/en-us/azure/synapse-analytics/security/workspace-data-exfiltration-protection#:~:text=Azure%20Synapse%20Analytics%20workspaces%20support%20enabling%20data%20exfiltration,data%20to%20locations%20outside%20of%20your%20organization%E2%80%99s%20scope.">Synapse data exfiltration protection</a> are the key technologies used to implement the security boundary and protect the system’s data assets and critical components.</p>
 
 <p>Considering Synapse is a composition of <a href="https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is">several different technologies</a>, we need to :</p>
 <ul>
@@ -344,7 +344,7 @@ Source: <a href="https://techcommunity.microsoft.com/t5/azure-synapse-analytics-
   <li>
     <p><u>Chose Identity type in different Access Control Layers</u></p>
 
-    <p>There are four different identity types in the system.</p>
+    <p>There are four different identity solutions in the system.</p>
     <ul>
       <li>SQL Account (SQL Server)</li>
       <li>Service Principal (Azure AD)</li>
@@ -365,7 +365,7 @@ Source: <a href="https://techcommunity.microsoft.com/t5/azure-synapse-analytics-
   <li>
     <p><u>Consider Least-privileged access</u></p>
 
-    <p>In Zero trust guiding principles, it suggests providing just-in-time and just-enough-access to critical resources. After discussing with Security SA, we suggested Hitachi Vantara implement Azure <a href="https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure">AD Privileged Identity Management (PIM)</a> and enhance security deployment check in the future.</p>
+    <p>In Zero trust guiding principles, it suggests providing just-in-time and just-enough-access to critical resources. Azure <a href="https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure">AD Privileged Identity Management (PIM)</a> and enhance security deployment check in the future.</p>
   </li>
   <li>
     <p><u>Protect Linked Service</u></p>
@@ -386,7 +386,7 @@ Source: <a href="https://techcommunity.microsoft.com/t5/azure-synapse-analytics-
   <li>
     <p><u>Use VNet enabled self-hosted pipeline agent</u></p>
 
-    <p>Default Azure DevOp pipeline agent couldn’t support VNet communication because it used a very wide IP range. Therefore, we implemented Azure DevOps <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops">self-hosted agent</a> in VNet so the DevOps process can be protected and smoothly communicate with the whole Hitachi Data Emporium system. In addition, <a href="https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview">VM scale sets</a> are used to ensure the DevOps engine can scale up and down.</p>
+    <p>Default Azure DevOp pipeline agent couldn’t support VNet communication because it used a very wide IP range. Therefore, we implemented Azure DevOps <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops">self-hosted agent</a> in VNet so the DevOps process can be protected and smoothly communicate with the whole system. In addition, <a href="https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview">VM scale sets</a> are used to ensure the DevOps engine can scale up and down.</p>
   </li>
 </ul>
 
@@ -425,9 +425,9 @@ Source: <a href="https://techcommunity.microsoft.com/t5/azure-synapse-analytics-
 
 <p>And if you need advanced security management and threat detection capabilities, which provide fetures such as suspicious activities detection and alerting. You can enable  Cloud workload protection indivually for different resources. So you have the option to choose the most cost effective way to protect the system.</p>
 
-<p>#### Summary</p>
+<h4 id="summary">Summary</h4>
 
-<p>With the combination of Synapse Serverless SQL and Synpase Spark, we built a flexible,  scalable and cost-effective data lakehouse solution in the project. In this article, I tired to summarized the security design principle and practices we implemented in the solution. We start from the <a href="https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling">Threat Modeling tool</a> and guidance in the  <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#security-disciplines">Cloud Adoption Framework (CAF)’s security disciplines</a>. To harden the security protection, the project team decided to focus on Network and Asset protection, Identity and Access control, and DevOps security. We also evaluated the security score of the system and review the security suggestions provided by Microsoft Defender for cloud. Hope this learning will also helps you to  implementing a secure data lakehouse solution on Azure Synapse.</p>
+<p>With the combination of Synapse Serverless SQL and Synpase Spark, we built a flexible,  scalable and cost-effective data lakehouse solution in the project. In this article, I tired to summarized the security design principle and practices we implemented in the solution. We start from the <a href="https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling">Threat Modeling tool</a> and guidance in the  <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/secure/#security-disciplines">Cloud Adoption Framework (CAF)’s security disciplines</a>. To harden the security protection, the project team decided to focus on Network and Asset protection, Identity and Access control, and DevOps security. We also evaluated the security score of the system and review the security suggestions provided by Microsoft Defender for cloud. There are several different configurations you need to choose when you want to protect the network. In article it also describes the design after we compared different options. Identity and Access control is very important for securing the data asset in the system. Especially for the data lakehouse solution, you need to mapping different access control layers and choose right identity solution for it.  Hope this learning will also helps you to  implementing a secure data lakehouse solution on Azure Synapse.</p>
 
 <p><br />
 <br /></p>
