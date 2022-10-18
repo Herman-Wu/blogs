@@ -1,4 +1,18 @@
-# Sync-Async tasks pattern in MLOps pipeline
+---
+title: "Sync-Async tasks pattern in MLOps pipeline"
+layout: post
+summary: "This article discusses how  ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline."
+description: This article discusses how  ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline.
+toc: false
+comments: true
+image: 
+hide: false
+search_exclude: false
+categories: [mlops, machine leanring, devOps, Azure Pipeline, Azure Machine Learning]
+---
+
+
+# 
 
 Machine learning operations (MLOps) process needs to [combine practices in DevOps and machine learning](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops). In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
 But in a machine learning project, the training and validation steps could take a long time to run, from a few hours to a few days. It is not practical to wait for the training to finish before moving on to the next step. So during the MLOps flow design, we need to take different approaches and find a way to combine synchronous and asynchronous steps in order to run the end-to-end training process efficiently.
@@ -11,7 +25,7 @@ During the build validation phase, we want to validate the code quality quickly 
 To speed up the process, we can use a small toy dataset to reduce the resource and time required for training the model. We can also reduce the training epoch and parameter range to reduce the training time further.
 This approach uses synchronous pipeline tasks for preparing data and running the training. Because ML model training time is limited, the task can wait for the training to finish and then move on to the next step.
 
-![synchronous task pattern](/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-sync-task-pattern.png)
+![synchronous task pattern]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-sync-task-pattern.png)
 
 Following is the code snippet that submits an ML training using [AML CLI v2](https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2#azure-machine-learning-cli-v2) and waiting for the result in an ADO task.
 
@@ -71,14 +85,14 @@ Other additional parameters:
 ## Use asynchronous task for ML model training step in integration test pipeline and production
 
 [MLOps pipeline usually includes multiple steps](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment#mlops-in-machine-learning), such as data preprocessing, model training, model evaluation, model registration, and model deployment. Sometimes, we need to run ML training in the integration test and production environments. For example, a defect detection system might want to retrain an ML model using the existing algorithm with a newly updated dataset from a production line. To automate the process, we want to ensure the whole MLOps pipeline can pass the integration test and run correctly in the production environment. However, the model training step could take a long time to finish. We need to use asynchronous tasks to run the model training step and prevent the long waiting time in the main pipeline.
-![asynchronous task pattern](/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-task.png)
+![asynchronous task pattern]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-task.png)
 
 In Azure DevOps, the Microsoft-hosted agent has a [job time-out limitation](https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out). You can have a job running for the maximum 360 minutes (6 hours). The pipeline will fail if the model training step is longer than the time limitation. There are a few ways to implement an asynchronous pipeline task in Azure DevOps to prevent the problem.
 
 ### Use Azure Pipeline REST API task to invoke published Azure ML pipelines and wait for the post-back event
 
 In this approach, you [publish your AML pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-deploy-pipelines) and get a REST endpoint for the pipeline. And then you can use Azure Pipeline [REST API task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/http-rest-api?view=azure-devops) to invoke published Azure ML pipelines and wait for the post-back events. To wait for the post-back event, we need to set the `waitForCompletion` attribute of the REST API task to `true`.
-![Use Azure Pipeline REST API task to invoke published Azure ML pipelines](/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png)
+![Use Azure Pipeline REST API task to invoke published Azure ML pipelines]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png)
 The [Invoking Azure ML Pipeline From Azure DevOps](https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance-and-examples/azure-ml-tips-and-tricks/azure-ml-from-azdo.md) document in this playbook has more detail implementation introduction.
 
 _Limitation: The latest AML CLI/SDK v2 doesn't support AML pipeline web API yet._
@@ -88,7 +102,7 @@ _Limitation: The latest AML CLI/SDK v2 doesn't support AML pipeline web API yet.
 An AML component is a self-contained piece of code that accomplish a task in a machine learning pipeline. It is the building block of am AML pipeline.
 
 In this implementation, we use Azure ML CLI/SDK v2 to submit the AML pipeline job. And in the final step of pipeline job, use an [AML component](https://learn.microsoft.com/en-us/azure/machine-learning/concept-component) to invoke REST API of another [Azure Pipeline](https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/run-pipeline?view=azure-devops-rest-6.0) to trigger the next steps.  
-![Use an AML component to invoke REST API of another Azure Pipeline](/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-components.png)
+![Use an AML component to invoke REST API of another Azure Pipeline]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-components.png)
 
 Following are the code snippets of an abbreviate reference implementation of the trigger Azure pipeline AML component.
 
@@ -242,7 +256,7 @@ python ado-pipeline-trigger.py
 ### Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline
 
 Azure Machine Learning manages the entire lifecycle of machine learning process, during the lifecycle AML will [publish several status events](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-event-grid#event-types-for-azure-machine-learning) in Event Grid, such as a completion of training runs event or a registration and deployment of models event. We can use [supported event handler](https://learn.microsoft.com/en-us/azure/event-grid/event-handlers#supported-event-handlers) to subscribe these events and react to them.
-![Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline](/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-eventgrid.png)
+![Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-eventgrid.png)
 
 Here are the supported Azure ML events:
 
@@ -260,7 +274,7 @@ For example, to continue the MLOps pipeline when the ML training is finished, we
 
 In this approach, we will use [Azure Pipeline Self-host agent](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser#install) to run the AML pipeline . Because there is no  [job time-out limitation](https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out) for self-hosted agent, it can trigger an AML training task and wait for the training to finish, then moving on to the next step.
 
-![Use Azure Pipeline Self-host agent to run the AML pipeline](/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-selfhostagent.png)
+![Use Azure Pipeline Self-host agent to run the AML pipeline]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-selfhostagent.png)
 
 This approach uses synchronized tasks. However, we will need to install the agent and maintain the environment that runs the agent.
 
