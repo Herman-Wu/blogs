@@ -1,4 +1,324 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2022-04-06T13:46:23-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Security practices and design principles for implementing a data lakehouse solution in Azure Synapse</title><link href="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html" rel="alternate" type="text/html" title="Security practices and design principles for implementing a data lakehouse solution in Azure Synapse" /><published>2022-03-15T00:00:00-05:00</published><updated>2022-03-15T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution</id><content type="html" xml:base="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html">&lt;h3 id=&quot;security-practices-and-design-principles-for-implementing-a-data-lakehouse-solution-in-azure-synapse&quot;&gt;&lt;em&gt;Security practices and design principles for implementing a data lakehouse solution in Azure Synapse&lt;/em&gt;&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://herman-wu.github.io/blogs/feed.xml" rel="self" type="application/atom+xml" /><link href="https://herman-wu.github.io/blogs/" rel="alternate" type="text/html" /><updated>2022-10-18T12:26:05-05:00</updated><id>https://herman-wu.github.io/blogs/feed.xml</id><title type="html">Herman’s Notebook</title><subtitle>Here is the repository of notes that I would like to remember and share</subtitle><entry><title type="html">Sync Async Mlops Patterns</title><link href="https://herman-wu.github.io/blogs/2022/10/10/sync-async-mlops-patterns.html" rel="alternate" type="text/html" title="Sync Async Mlops Patterns" /><published>2022-10-10T00:00:00-05:00</published><updated>2022-10-10T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/2022/10/10/sync-async-mlops-patterns</id><content type="html" xml:base="https://herman-wu.github.io/blogs/2022/10/10/sync-async-mlops-patterns.html">&lt;h1 id=&quot;sync-async-tasks-pattern-in-mlops-pipeline&quot;&gt;Sync-Async tasks pattern in MLOps pipeline&lt;/h1&gt;
+
+&lt;p&gt;Machine learning operations (MLOps) process needs to &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops&quot;&gt;combine practices in DevOps and machine learning&lt;/a&gt;. In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
+But in a machine learning project, the training and validation steps could take a long time to run, from a few hours to a few days. It is not practical to wait for the training to finish before moving on to the next step. So during the MLOps flow design, we need to take different approaches and find a way to combine synchronous and asynchronous steps in order to run the end-to-end training process efficiently.&lt;/p&gt;
+
+&lt;p&gt;This article will introduce different practices to implement Sync-Async tasks pattern in the MLOps pipeline using the &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops&quot;&gt;Azure pipeline&lt;/a&gt; and &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines&quot;&gt;Azure Machine Learning (AML) pipeline&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;use-synchronous-task-and-toy-dataset-for-ml-build-validation-and-unit-test&quot;&gt;Use synchronous task and toy dataset for ML build validation and unit test&lt;/h2&gt;
+
+&lt;p&gt;During the build validation phase, we want to validate the code quality quickly and ensure we implement the data processing code and the ML algorithm correctly. The algorithm code should be able to train a model successfully using the provided dataset.
+To speed up the process, we can use a small toy dataset to reduce the resource and time required for training the model. We can also reduce the training epoch and parameter range to reduce the training time further.
+This approach uses synchronous pipeline tasks for preparing data and running the training. Because ML model training time is limited, the task can wait for the training to finish and then move on to the next step.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-sync-task-pattern.png&quot; alt=&quot;synchronous task pattern&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Following is the code snippet that submits an ML training using &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2#azure-machine-learning-cli-v2&quot;&gt;AML CLI v2&lt;/a&gt; and waiting for the result in an ADO task.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;parameters&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;amlJobExecutionScript&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;amlJobSetCommand&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;AzureCLI@2&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;displayName&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run Azure ML Pipeline and Wait for Results&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;inputs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;na&quot;&gt;azureSubscription&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;$(AZURE_RM_SVC_CONNECTION)&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;scriptType&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bash&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;workingDirectory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;$(System.DefaultWorkingDirectory)&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;scriptLocation&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;inlineScript&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;inlineScript&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;export AZUREML_CURRENT_CLOUD=&quot;AzureCloud&quot; #Choose a different value according to your cloud environement: AzureCloud, AzureChinaCloud, AzureUSGovernment, AzureGermanCloud&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;run_id=$(az ml job create -f $ \&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;$)&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;echo &quot;RunID is $run_id&quot;&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;if [[ -z &quot;$run_id&quot; ]]&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;then&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;echo &quot;Job creation failed&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;exit 3&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;fi&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;az ml job show -n $run_id --web&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;status=$(az ml job show -n $run_id --query status -o tsv)&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;if [[ -z &quot;$status&quot; ]]&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;then&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;echo &quot;Status query failed&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;exit 4&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;fi&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;running=(&quot;NotStarted&quot; &quot;Queued&quot; &quot;Starting&quot; &quot;Preparing&quot; &quot;Running&quot; &quot;Finalizing&quot;)&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;while [[ ${running[*]} =~ $status ]]&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;sleep 15 &lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;status=$(az ml job show -n $run_id --query status -o tsv)&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;echo $status&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;done&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;if [[ &quot;$status&quot; != &quot;Completed&quot; ]]  &lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;then&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;echo &quot;Training Job failed&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;exit 3&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;fi&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Other additional parameters:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AZURE_RM_SVC_CONNECTION&lt;/code&gt; - Azure DevOps service connection name.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;amlJobExecutionScript&lt;/code&gt; - Local path to the YAML file containing the Azure ML job specification.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;amlJobSetCommand&lt;/code&gt; - Additional Azure ML &lt;a href=&quot;https://learn.microsoft.com/en-us/cli/azure/ml/job?view=azure-cli-latest#az-ml-job-create-optional-parameters&quot;&gt;Job parameters&lt;/a&gt;. For example, &lt;code class=&quot;highlighter-rouge&quot;&gt;--name training-object-detection&lt;/code&gt; to specify the job name.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;use-asynchronous-task-for-ml-model-training-step-in-integration-test-pipeline-and-production&quot;&gt;Use asynchronous task for ML model training step in integration test pipeline and production&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment#mlops-in-machine-learning&quot;&gt;MLOps pipeline usually includes multiple steps&lt;/a&gt;, such as data preprocessing, model training, model evaluation, model registration, and model deployment. Sometimes, we need to run ML training in the integration test and production environments. For example, a defect detection system might want to retrain an ML model using the existing algorithm with a newly updated dataset from a production line. To automate the process, we want to ensure the whole MLOps pipeline can pass the integration test and run correctly in the production environment. However, the model training step could take a long time to finish. We need to use asynchronous tasks to run the model training step and prevent the long waiting time in the main pipeline.
+&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-task.png&quot; alt=&quot;asynchronous task pattern&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In Azure DevOps, the Microsoft-hosted agent has a &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out&quot;&gt;job time-out limitation&lt;/a&gt;. You can have a job running for the maximum 360 minutes (6 hours). The pipeline will fail if the model training step is longer than the time limitation. There are a few ways to implement an asynchronous pipeline task in Azure DevOps to prevent the problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;use-azure-pipeline-rest-api-task-to-invoke-published-azure-ml-pipelines-and-wait-for-the-post-back-event&quot;&gt;Use Azure Pipeline REST API task to invoke published Azure ML pipelines and wait for the post-back event&lt;/h3&gt;
+
+&lt;p&gt;In this approach, you &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-deploy-pipelines&quot;&gt;publish your AML pipeline&lt;/a&gt; and get a REST endpoint for the pipeline. And then you can use Azure Pipeline &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/http-rest-api?view=azure-devops&quot;&gt;REST API task&lt;/a&gt; to invoke published Azure ML pipelines and wait for the post-back events. To wait for the post-back event, we need to set the &lt;code class=&quot;highlighter-rouge&quot;&gt;waitForCompletion&lt;/code&gt; attribute of the REST API task to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;.
+&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png&quot; alt=&quot;Use Azure Pipeline REST API task to invoke published Azure ML pipelines&quot; /&gt;
+The &lt;a href=&quot;https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance-and-examples/azure-ml-tips-and-tricks/azure-ml-from-azdo.md&quot;&gt;Invoking Azure ML Pipeline From Azure DevOps&lt;/a&gt; document in this playbook has more detail implementation introduction.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Limitation: The latest AML CLI/SDK v2 doesn’t support AML pipeline web API yet.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;use-an-aml-component-to-invoke-rest-api-of-another-azure-pipeline&quot;&gt;Use an AML component to invoke REST API of another Azure Pipeline&lt;/h3&gt;
+
+&lt;p&gt;An AML component is a self-contained piece of code that accomplish a task in a machine learning pipeline. It is the building block of am AML pipeline.&lt;/p&gt;
+
+&lt;p&gt;In this implementation, we use Azure ML CLI/SDK v2 to submit the AML pipeline job. And in the final step of pipeline job, use an &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/concept-component&quot;&gt;AML component&lt;/a&gt; to invoke REST API of another &lt;a href=&quot;https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/run-pipeline?view=azure-devops-rest-6.0&quot;&gt;Azure Pipeline&lt;/a&gt; to trigger the next steps.&lt;br /&gt;
+&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-components.png&quot; alt=&quot;Use an AML component to invoke REST API of another Azure Pipeline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Following are the code snippets of an abbreviate reference implementation of the trigger Azure pipeline AML component.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Trigger Azure Pipeline python code : &lt;code class=&quot;highlighter-rouge&quot;&gt;ado-pipeline-trigger.py&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;requests&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;requests.structures&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CaseInsensitiveDict&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;argparse&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;azure.keyvault.secrets&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SecretClient&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;azure.identity&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DefaultAzureCredential&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;parse_args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Parse input args&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# setup arg parser
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argparse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ArgumentParser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# add arguments
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--modelpath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Path to input model&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--modelname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Name of the registered model&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--kvname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Key Vault Resource Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--secretname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Secret name for ADO Personal Access Token&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ADO organization Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--project&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ADO project Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--branch&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ADO repo branch name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--apiversion&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ADO restful api version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--pipelineid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ID of the pipeline you need to trigger&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;--pipelineversion&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Pipeline version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# parse args
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parse_args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# return args
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_run_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modelpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Read run_id from MLmodel&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mlmodel_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modelpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;MLmodel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;run_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mlmodel_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modelfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modelfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;run_id&quot;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;run_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;':'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;run_id&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_secret_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kv_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;secret_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Get the secret value from keyvault&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;kv_uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://{kv_name}.vault.azure.com&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;credential&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DefaultAzureCredential&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SecretClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vault_url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kv_uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;credential&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;credential&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Retrieving ADO personal access token {secret_name} from {kv_name}.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;retrieved_secret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;secret_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;retrieved_secret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;trigger_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Trigger Azure Pipeline&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;run_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_run_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modelpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;secret_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_secret_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kvname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;secretname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CaseInsensitiveDict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;basic_auth_credentials&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;secret_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Content-Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;application/json&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;request_body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;resources&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;repositories&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;self&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;s&quot;&gt;&quot;refName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;branch&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;variables&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;model_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modelname&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;run_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;run_id&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://dev.azure.com/{}/{}/_apis/pipelines/{}/runs?pipelineVersion={}&amp;amp;api-version={}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pipelineid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pipelineversion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;apiversion&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;url: {url}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;basic_auth_credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request_body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;response code {resp.status_code}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;raise_for_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+
+&lt;span class=&quot;c1&quot;&gt;# run script
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# parse args
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parse_args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# trigger model registration pipeline
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;trigger_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Trigger Azure Pipeline AML component: &lt;code class=&quot;highlighter-rouge&quot;&gt;component_pipeline_trigger.yaml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;s&quot;&gt;$schema&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trigger_pipeline&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;display_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trigger Azure pipeline&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;command&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;inputs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;modelpath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mlflow_model&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;modelname&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kvname&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;secretname&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;branch&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiversion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;pipelineid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;integer&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;pipelineversion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;integer&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;../../../src/pipeline_trigger/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;azureml:sklearn-jsonline-keyvault-env@latest&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;ython ado-pipeline-trigger.py&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-modelpath ${{inputs.modelpath}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-modelname ${{inputs.modelname}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-kvname ${{inputs.kvname}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-secretname ${{inputs.secretname}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-org ${{inputs.org}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-project ${{inputs.project}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-branch ${{inputs.branch}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-apiversion ${{inputs.apiversion}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-pipelineid ${{inputs.pipelineid}}&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-pipelineversion ${{inputs.pipelineversion}}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;subscribe-azure-ml-event-grid-events-and-use-a-supported-event-handler-to--trigger-another-azure-pipeline&quot;&gt;Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline&lt;/h3&gt;
+
+&lt;p&gt;Azure Machine Learning manages the entire lifecycle of machine learning process, during the lifecycle AML will &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-event-grid#event-types-for-azure-machine-learning&quot;&gt;publish several status events&lt;/a&gt; in Event Grid, such as a completion of training runs event or a registration and deployment of models event. We can use &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/event-grid/event-handlers#supported-event-handlers&quot;&gt;supported event handler&lt;/a&gt; to subscribe these events and react to them.
+&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-eventgrid.png&quot; alt=&quot;Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here are the supported Azure ML events:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Event type&lt;/th&gt;
+      &lt;th&gt;Subject format&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Microsoft.MachineLearningServices.RunCompleted&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;experiments/{ExperimentId}/runs/{RunId}&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Microsoft.MachineLearningServices.ModelRegistered&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;models/{modelName}:{modelVersion}&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Microsoft.MachineLearningServices.ModelDeployed&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;endpoints/{serviceId}&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Microsoft.MachineLearningServices.DatasetDriftDetected&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;datadrift/{data.DataDriftId}/run/{data.RunId}&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Microsoft.MachineLearningServices.RunStatusChanged&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;experiments/{ExperimentId}/runs/{RunId}&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;For example, to continue the MLOps pipeline when the ML training is finished, we will subscribe &lt;code class=&quot;highlighter-rouge&quot;&gt;RunCompleted&lt;/code&gt; event and trigger another Azure  Pipeline when the event is published. To trigger another Azure Pipeline, we can use &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/automation/manage-runbooks&quot;&gt;Azure Automation runbooks&lt;/a&gt;,  &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-overview&quot;&gt;Logic Apps&lt;/a&gt;, or &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview&quot;&gt;Azure Functions&lt;/a&gt; and implement the trigger next step code in one of them.&lt;/p&gt;
+
+&lt;h2 id=&quot;use-azure-pipeline-self-host-agent-to-run-the-aml-pipeline&quot;&gt;Use Azure Pipeline Self-host agent to run the AML pipeline&lt;/h2&gt;
+
+&lt;p&gt;In this approach, we will use &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&amp;amp;tabs=browser#install&quot;&gt;Azure Pipeline Self-host agent&lt;/a&gt; to run the AML pipeline . Because there is no  &lt;a href=&quot;https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out&quot;&gt;job time-out limitation&lt;/a&gt; for self-hosted agent, it can trigger an AML training task and wait for the training to finish, then moving on to the next step.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-selfhostagent.png&quot; alt=&quot;Use Azure Pipeline Self-host agent to run the AML pipeline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This approach uses synchronized tasks. However, we will need to install the agent and maintain the environment that runs the agent.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Some MLOps-related tasks have a different nature compared to DevOps focus tasks. It will impact the tool you could use and the decision of using which tool. This article highlights how the ML training duration affects the task pipeline in the MLOps process. This difference will be more obvious when you include traditional DevOps tasks such as unit testing and integration testing in your MLOps process. This article provides some strategies the operation team could use to mitigate the issue. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline.&lt;/p&gt;
+
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;[MLOps for Python with Azure Machine Learning - Azure Architecture Center&lt;/td&gt;
+          &lt;td&gt;Microsoft Learn](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/ai/mlops-python)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;[MLOps: Machine learning model management - Azure Machine Learning&lt;/td&gt;
+          &lt;td&gt;Microsoft Learn](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mercari.github.io/ml-system-design-pattern/&quot;&gt;System design patterns for machine learning&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Sync-Async tasks pattern in MLOps pipeline</summary></entry><entry><title type="html">Security practices and design principles for implementing a data lakehouse solution in Azure Synapse</title><link href="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html" rel="alternate" type="text/html" title="Security practices and design principles for implementing a data lakehouse solution in Azure Synapse" /><published>2022-03-15T00:00:00-05:00</published><updated>2022-03-15T00:00:00-05:00</updated><id>https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution</id><content type="html" xml:base="https://herman-wu.github.io/blogs/datalakehouse/lakehouse/synapse/security/data/sql/serverless%20sql/azure/vnet/private%20endpoint/2022/03/15/Security-practices-and-design-priciples-for-implementing-a-data-lakehouse-solution.html">&lt;h3 id=&quot;security-practices-and-design-principles-for-implementing-a-data-lakehouse-solution-in-azure-synapse&quot;&gt;&lt;em&gt;Security practices and design principles for implementing a data lakehouse solution in Azure Synapse&lt;/em&gt;&lt;/h3&gt;
 
 &lt;h4 id=&quot;background&quot;&gt;Background&lt;/h4&gt;
 
