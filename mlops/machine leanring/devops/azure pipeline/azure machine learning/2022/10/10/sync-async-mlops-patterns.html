@@ -119,12 +119,10 @@ window.onload = wrap_img;
     </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>#</p>
-
-<p>Machine learning operations (MLOps) process needs to <a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops">combine practices in DevOps and machine learning</a>. In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
+    <p>Machine learning operations (MLOps) process needs to <a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops">combine practices in DevOps and machine learning</a>. In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
 But in a machine learning project, the training and validation steps could take a long time to run, from a few hours to a few days. It is not practical to wait for the training to finish before moving on to the next step. So during the MLOps flow design, we need to take different approaches and find a way to combine synchronous and asynchronous steps in order to run the end-to-end training process efficiently.</p>
 
-<p>This article will introduce different practices to implement Sync-Async tasks pattern in the MLOps pipeline using the <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops">Azure pipeline</a> and <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines">Azure Machine Learning (AML) pipeline</a>.</p>
+<p>This article will introduce different practices to implement Sync-Async tasks pattern in the MLOps pipeline using the <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops">Azure pipeline</a> and <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines">Azure Machine Learning (AML) pipeline</a> as the implementation example.</p>
 
 <h2 id="use-synchronous-task-and-toy-dataset-for-ml-build-validation-and-unit-test">Use synchronous task and toy dataset for ML build validation and unit test</h2>
 
@@ -201,7 +199,7 @@ This approach uses synchronous pipeline tasks for preparing data and running the
 
 <p>In this approach, you <a href="https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-deploy-pipelines">publish your AML pipeline</a> and get a REST endpoint for the pipeline. And then you can use Azure Pipeline <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/http-rest-api?view=azure-devops">REST API task</a> to invoke published Azure ML pipelines and wait for the post-back events. To wait for the post-back event, we need to set the <code class="highlighter-rouge">waitForCompletion</code> attribute of the REST API task to <code class="highlighter-rouge">true</code>.
 <img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png" alt="Use Azure Pipeline REST API task to invoke published Azure ML pipelines" />
-The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance-and-examples/azure-ml-tips-and-tricks/azure-ml-from-azdo.md">Invoking Azure ML Pipeline From Azure DevOps</a> document in this playbook has more detail implementation introduction.</p>
+The <a href="https://stackoverflow.com/questions/65997961/how-to-trigger-an-azureml-pipeline-from-azure-devops">How to trigger an AzureML Pipeline from Azure DevOps?</a> document has more detail implementation introduction.</p>
 
 <p><em>Limitation: The latest AML CLI/SDK v2 doesn’t support AML pipeline web API yet.</em></p>
 
@@ -419,26 +417,14 @@ The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance
 
 <ul>
   <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>[MLOps for Python with Azure Machine Learning - Azure Architecture Center</td>
-          <td>Microsoft Learn](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/ai/mlops-python)</td>
-        </tr>
-      </tbody>
-    </table>
+    <p><a href="https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/ai/mlops-python">MLOps for Python with Azure Machine Learning - Azure Architecture Center</a></p>
   </li>
   <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>[MLOps: Machine learning model management - Azure Machine Learning</td>
-          <td>Microsoft Learn](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment)</td>
-        </tr>
-      </tbody>
-    </table>
+    <p><a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment">MLOps: Machine learning model management - Azure Machine Learning</a></p>
   </li>
-  <li><a href="https://mercari.github.io/ml-system-design-pattern/">System design patterns for machine learning</a></li>
+  <li>
+    <p><a href="https://mercari.github.io/ml-system-design-pattern/">System design patterns for machine learning</a></p>
+  </li>
 </ul>
 
   </div><!-- from https://github.com/utterance/utterances -->
