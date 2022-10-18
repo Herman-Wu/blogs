@@ -1,4 +1,125 @@
-<h1 id="sync-async-tasks-pattern-in-mlops-pipeline">Sync-Async tasks pattern in MLOps pipeline</h1>
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Sync-Async tasks pattern in MLOps pipeline | Herman’s Notebook</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Sync-Async tasks pattern in MLOps pipeline" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline." />
+<meta property="og:description" content="This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline." />
+<link rel="canonical" href="https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html" />
+<meta property="og:url" content="https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html" />
+<meta property="og:site_name" content="Herman’s Notebook" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-10T00:00:00-05:00" />
+<script type="application/ld+json">
+{"headline":"Sync-Async tasks pattern in MLOps pipeline","dateModified":"2022-10-10T00:00:00-05:00","description":"This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline.","datePublished":"2022-10-10T00:00:00-05:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html"},"url":"https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blogs/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" /><link rel="shortcut icon" type="image/x-icon" href="/blogs/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Sync-Async tasks pattern in MLOps pipeline | Herman’s Notebook</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Sync-Async tasks pattern in MLOps pipeline" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline." />
+<meta property="og:description" content="This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline." />
+<link rel="canonical" href="https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html" />
+<meta property="og:url" content="https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html" />
+<meta property="og:site_name" content="Herman’s Notebook" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-10T00:00:00-05:00" />
+<script type="application/ld+json">
+{"headline":"Sync-Async tasks pattern in MLOps pipeline","dateModified":"2022-10-10T00:00:00-05:00","description":"This article discusses how ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline.","datePublished":"2022-10-10T00:00:00-05:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html"},"url":"https://herman-wu.github.io/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://herman-wu.github.io/blogs/feed.xml" title="Herman's Notebook" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blogs/">Herman&#39;s Notebook</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blogs/about/">About Me</a><a class="page-link" href="/blogs/search/">Search</a><a class="page-link" href="/blogs/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Sync-Async tasks pattern in MLOps pipeline</h1><p class="page-description">This article discusses how  ML training duration impacts MLOps pipeline and how to mitigate the impact using sync-async task patterns. It also includes code snippets when using Azure Pipeline and Azure Machine Learning Pipeline.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-10-10T00:00:00-05:00" itemprop="datePublished">
+        Oct 10, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blogs/categories/#mlops">mlops</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#machine leanring">machine leanring</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#devOps">devOps</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#Azure Pipeline">Azure Pipeline</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blogs/categories/#Azure Machine Learning">Azure Machine Learning</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>#</p>
 
 <p>Machine learning operations (MLOps) process needs to <a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops">combine practices in DevOps and machine learning</a>. In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
 But in a machine learning project, the training and validation steps could take a long time to run, from a few hours to a few days. It is not practical to wait for the training to finish before moving on to the next step. So during the MLOps flow design, we need to take different approaches and find a way to combine synchronous and asynchronous steps in order to run the end-to-end training process efficiently.</p>
@@ -11,7 +132,7 @@ But in a machine learning project, the training and validation steps could take 
 To speed up the process, we can use a small toy dataset to reduce the resource and time required for training the model. We can also reduce the training epoch and parameter range to reduce the training time further.
 This approach uses synchronous pipeline tasks for preparing data and running the training. Because ML model training time is limited, the task can wait for the training to finish and then move on to the next step.</p>
 
-<p><img src="/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-sync-task-pattern.png" alt="synchronous task pattern" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-sync-task-pattern.png" alt="synchronous task pattern" /></p>
 
 <p>Following is the code snippet that submits an ML training using <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2#azure-machine-learning-cli-v2">AML CLI v2</a> and waiting for the result in an ADO task.</p>
 
@@ -72,14 +193,14 @@ This approach uses synchronous pipeline tasks for preparing data and running the
 <h2 id="use-asynchronous-task-for-ml-model-training-step-in-integration-test-pipeline-and-production">Use asynchronous task for ML model training step in integration test pipeline and production</h2>
 
 <p><a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment#mlops-in-machine-learning">MLOps pipeline usually includes multiple steps</a>, such as data preprocessing, model training, model evaluation, model registration, and model deployment. Sometimes, we need to run ML training in the integration test and production environments. For example, a defect detection system might want to retrain an ML model using the existing algorithm with a newly updated dataset from a production line. To automate the process, we want to ensure the whole MLOps pipeline can pass the integration test and run correctly in the production environment. However, the model training step could take a long time to finish. We need to use asynchronous tasks to run the model training step and prevent the long waiting time in the main pipeline.
-<img src="/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-task.png" alt="asynchronous task pattern" /></p>
+<img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-task.png" alt="asynchronous task pattern" /></p>
 
 <p>In Azure DevOps, the Microsoft-hosted agent has a <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out">job time-out limitation</a>. You can have a job running for the maximum 360 minutes (6 hours). The pipeline will fail if the model training step is longer than the time limitation. There are a few ways to implement an asynchronous pipeline task in Azure DevOps to prevent the problem.</p>
 
 <h3 id="use-azure-pipeline-rest-api-task-to-invoke-published-azure-ml-pipelines-and-wait-for-the-post-back-event">Use Azure Pipeline REST API task to invoke published Azure ML pipelines and wait for the post-back event</h3>
 
 <p>In this approach, you <a href="https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-deploy-pipelines">publish your AML pipeline</a> and get a REST endpoint for the pipeline. And then you can use Azure Pipeline <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/http-rest-api?view=azure-devops">REST API task</a> to invoke published Azure ML pipelines and wait for the post-back events. To wait for the post-back event, we need to set the <code class="highlighter-rouge">waitForCompletion</code> attribute of the REST API task to <code class="highlighter-rouge">true</code>.
-<img src="/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png" alt="Use Azure Pipeline REST API task to invoke published Azure ML pipelines" />
+<img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png" alt="Use Azure Pipeline REST API task to invoke published Azure ML pipelines" />
 The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance-and-examples/azure-ml-tips-and-tricks/azure-ml-from-azdo.md">Invoking Azure ML Pipeline From Azure DevOps</a> document in this playbook has more detail implementation introduction.</p>
 
 <p><em>Limitation: The latest AML CLI/SDK v2 doesn’t support AML pipeline web API yet.</em></p>
@@ -89,7 +210,7 @@ The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance
 <p>An AML component is a self-contained piece of code that accomplish a task in a machine learning pipeline. It is the building block of am AML pipeline.</p>
 
 <p>In this implementation, we use Azure ML CLI/SDK v2 to submit the AML pipeline job. And in the final step of pipeline job, use an <a href="https://learn.microsoft.com/en-us/azure/machine-learning/concept-component">AML component</a> to invoke REST API of another <a href="https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/run-pipeline?view=azure-devops-rest-6.0">Azure Pipeline</a> to trigger the next steps.<br />
-<img src="/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-components.png" alt="Use an AML component to invoke REST API of another Azure Pipeline" /></p>
+<img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-components.png" alt="Use an AML component to invoke REST API of another Azure Pipeline" /></p>
 
 <p>Following are the code snippets of an abbreviate reference implementation of the trigger Azure pipeline AML component.</p>
 
@@ -245,7 +366,7 @@ The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance
 <h3 id="subscribe-azure-ml-event-grid-events-and-use-a-supported-event-handler-to--trigger-another-azure-pipeline">Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline</h3>
 
 <p>Azure Machine Learning manages the entire lifecycle of machine learning process, during the lifecycle AML will <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-event-grid#event-types-for-azure-machine-learning">publish several status events</a> in Event Grid, such as a completion of training runs event or a registration and deployment of models event. We can use <a href="https://learn.microsoft.com/en-us/azure/event-grid/event-handlers#supported-event-handlers">supported event handler</a> to subscribe these events and react to them.
-<img src="/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-eventgrid.png" alt="Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline" /></p>
+<img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-async-eventgrid.png" alt="Subscribe Azure ML Event Grid events, and use a supported event handler to  trigger another Azure Pipeline" /></p>
 
 <p>Here are the supported Azure ML events:</p>
 
@@ -286,7 +407,7 @@ The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance
 
 <p>In this approach, we will use <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&amp;tabs=browser#install">Azure Pipeline Self-host agent</a> to run the AML pipeline . Because there is no  <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/troubleshooting?view=azure-devops#job-time-out">job time-out limitation</a> for self-hosted agent, it can trigger an AML training task and wait for the training to finish, then moving on to the next step.</p>
 
-<p><img src="/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-selfhostagent.png" alt="Use Azure Pipeline Self-host agent to run the AML pipeline" /></p>
+<p><img src="https://Herman-Wu.github.io/blogs/assets/img/2022-10-10-sync-async-mlops-patterns/mlops-ado-aml-selfhostagent.png" alt="Use Azure Pipeline Self-host agent to run the AML pipeline" /></p>
 
 <p>This approach uses synchronized tasks. However, we will need to install the agent and maintain the environment that runs the agent.</p>
 
@@ -319,3 +440,44 @@ The <a href="https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance
   </li>
   <li><a href="https://mercari.github.io/ml-system-design-pattern/">System design patterns for machine learning</a></li>
 </ul>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="Herman-Wu/blogs"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blogs/mlops/machine%20leanring/devops/azure%20pipeline/azure%20machine%20learning/2022/10/10/sync-async-mlops-patterns.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blogs/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blogs/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blogs/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Here is the repository of notes that I would like to remember and share</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Herman-Wu" target="_blank" title="Herman-Wu"><svg class="svg-icon grey"><use xlink:href="/blogs/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/hermanwu01" target="_blank" title="hermanwu01"><svg class="svg-icon grey"><use xlink:href="/blogs/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
