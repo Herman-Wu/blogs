@@ -12,12 +12,10 @@ categories: [mlops, machine leanring, devOps, Azure Pipeline, Azure Machine Lear
 ---
 
 
-# 
-
 Machine learning operations (MLOps) process needs to [combine practices in DevOps and machine learning](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/ai-machine-learning-mlops#machine-learning-operations-vs-devops). In a software project, testing and validating pipelines usually take a few hours or less to run. Most software projects could complete their unit tests in a few hours. Pipeline tasks that run synchronously or in parallel are enough in most cases.
 But in a machine learning project, the training and validation steps could take a long time to run, from a few hours to a few days. It is not practical to wait for the training to finish before moving on to the next step. So during the MLOps flow design, we need to take different approaches and find a way to combine synchronous and asynchronous steps in order to run the end-to-end training process efficiently.
 
-This article will introduce different practices to implement Sync-Async tasks pattern in the MLOps pipeline using the [Azure pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) and [Azure Machine Learning (AML) pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines).
+This article will introduce different practices to implement Sync-Async tasks pattern in the MLOps pipeline using the [Azure pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) and [Azure Machine Learning (AML) pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines) as the implementation example.
 
 ## Use synchronous task and toy dataset for ML build validation and unit test
 
@@ -93,7 +91,7 @@ In Azure DevOps, the Microsoft-hosted agent has a [job time-out limitation](http
 
 In this approach, you [publish your AML pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-deploy-pipelines) and get a REST endpoint for the pipeline. And then you can use Azure Pipeline [REST API task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/http-rest-api?view=azure-devops) to invoke published Azure ML pipelines and wait for the post-back events. To wait for the post-back event, we need to set the `waitForCompletion` attribute of the REST API task to `true`.
 ![Use Azure Pipeline REST API task to invoke published Azure ML pipelines]({{ site.url }}{{ site.baseurl }}/assets/img/2022-10-10-sync-async-mlops-patterns/ado-aml-async-restapi.png)
-The [Invoking Azure ML Pipeline From Azure DevOps](https://github.com/cse-labs/code-with-mlops/blob/main/docs/guidance-and-examples/azure-ml-tips-and-tricks/azure-ml-from-azdo.md) document in this playbook has more detail implementation introduction.
+The [How to trigger an AzureML Pipeline from Azure DevOps?](https://stackoverflow.com/questions/65997961/how-to-trigger-an-azureml-pipeline-from-azure-devops) document has more detail implementation introduction.
 
 _Limitation: The latest AML CLI/SDK v2 doesn't support AML pipeline web API yet._
 
@@ -286,8 +284,8 @@ Some MLOps-related tasks have a different nature compared to DevOps focus tasks.
 
 ## Reference
 
-- [MLOps for Python with Azure Machine Learning - Azure Architecture Center | Microsoft Learn](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/ai/mlops-python)
+- [MLOps for Python with Azure Machine Learning - Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/ai/mlops-python)
 
-- [MLOps: Machine learning model management - Azure Machine Learning | Microsoft Learn](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment)
+- [MLOps: Machine learning model management - Azure Machine Learning](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment)
 
 - [System design patterns for machine learning](https://mercari.github.io/ml-system-design-pattern/)
